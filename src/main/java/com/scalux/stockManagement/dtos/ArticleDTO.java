@@ -1,6 +1,6 @@
 package com.scalux.stockManagement.dtos;
 
-import com.scalux.stockManagement.entities.Family;
+import com.scalux.stockManagement.enums.Family;
 import lombok.Data;
 
 import java.math.BigDecimal;

@@ -3,6 +3,7 @@ package com.scalux.stockManagement.mappers;
 import com.scalux.stockManagement.dtos.BonDeCommandeDTO;
 import com.scalux.stockManagement.entities.BonDeCommande;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface BonDeCommandeMapper {

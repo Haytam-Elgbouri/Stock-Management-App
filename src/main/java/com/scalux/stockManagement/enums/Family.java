@@ -1,4 +1,4 @@
-package com.scalux.stockManagement.entities;
+package com.scalux.stockManagement.enums;
 
 public enum Family {
     ACCESSORY, BARRE, PIECE

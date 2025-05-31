@@ -32,6 +32,12 @@ public class ArticleServiceImpl implements IArticleService {
     }
 
     @Override
+    public ArticleDTO getById(Long id){
+        Article article = articleRepository.findById(id).orElseThrow(()->new RuntimeException());
+        return articleMapper.toDto(article);
+    }
+
+    @Override
     public ArticleDTO update(Long id, ArticleDTO dto) {
         Article existing = articleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Article not found"));

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:4300")
+
 @RestController
 @RequestMapping("/api/articles")
 @RequiredArgsConstructor
@@ -22,8 +24,13 @@ public class ArticleController {
     }
 
     @GetMapping
-    public List<ArticleDTO> getAll() {
-        return articleService.getAll();
+    public ResponseEntity<List<ArticleDTO>> getAll() {
+        return ResponseEntity.ok(articleService.getAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ArticleDTO> getById( @PathVariable Long id) {
+        return ResponseEntity.ok(articleService.getById(id));
     }
 
     @PutMapping("/{id}")

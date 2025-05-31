@@ -1,5 +1,6 @@
 package com.scalux.stockManagement.entities;
 
+import com.scalux.stockManagement.enums.Family;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

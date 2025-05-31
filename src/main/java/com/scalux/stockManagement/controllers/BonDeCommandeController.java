@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:4300")
 @RestController
 @RequestMapping("/api/bcs")
 @RequiredArgsConstructor
@@ -40,4 +41,10 @@ public class BonDeCommandeController {
     public void delete(@PathVariable Long id) {
         bcService.delete(id);
     }
+
+    @PutMapping("/{id}/validate")
+    public ResponseEntity<BonDeCommandeDTO> validateBC(@PathVariable Long id) {
+        return ResponseEntity.ok(bcService.validateBC(id));
+    }
+
 }

@@ -9,8 +9,12 @@ import java.util.List;
 @Data
 public class BonDeCommandeDTO {
     private Long id;
+    private String reference;
     private LocalDate date;
+    private String supplierReference;
     private List<BCLineDTO> lignes;
     private BigDecimal prixTotalHT;
+    private boolean isValidated;
+
 }
 

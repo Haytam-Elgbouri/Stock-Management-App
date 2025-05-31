@@ -19,11 +19,16 @@ public class BonDeCommande {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String reference;
+
     private LocalDate date;
+    private String supplierReference;
 
     @OneToMany(mappedBy = "bc", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BCLine> lignes = new ArrayList<>();
 
     private BigDecimal prixTotalHT;
+
+    private boolean isValidated;
 }
 

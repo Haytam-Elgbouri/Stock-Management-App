@@ -9,5 +9,6 @@ public interface IBonDeCommandeService {
     List<BonDeCommandeDTO> getAll();
     BonDeCommandeDTO getById(Long id);
     BonDeCommandeDTO update(Long id, BonDeCommandeDTO dto);
+    BonDeCommandeDTO validateBC(Long id);
     void delete(Long id);
 }

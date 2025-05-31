@@ -11,19 +11,17 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BCLine {
+public class Stock {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String color;
-    private Integer quantity;
-
     @ManyToOne
     private Article article;
 
-    @ManyToOne
-    private BonDeCommande bc;
+    private String color;
 
-    private BigDecimal prixTotalLigne; // calculated = article.prixUnitaireHT * quantity
+
+    private int quantity;
 }

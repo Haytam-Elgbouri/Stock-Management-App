@@ -4,9 +4,8 @@ import com.scalux.stockManagement.entities.Article;
 import lombok.Data;
 
 @Data
-public class StockDTO {
-    private Long id;
+public class ResponseBCLineDTO {
     private Article article;
     private String color;
-    private int quantity;
+    private Integer quantity;
 }

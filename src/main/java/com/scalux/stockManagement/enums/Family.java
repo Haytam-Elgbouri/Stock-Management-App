@@ -1,5 +1,5 @@
 package com.scalux.stockManagement.enums;
 
 public enum Family {
-    ACCESSORY, BARRE, PIECE
+    ACCESSORY, BARRE, JOINT
 }

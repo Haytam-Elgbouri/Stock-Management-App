@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +40,8 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
     public BonDeCommandeDTO addBC(BonDeCommandeDTO dto) {
         BonDeCommande bc = new BonDeCommande();
         bc.setReference(dto.getReference());
-        bc.setDate(dto.getDate());
+        LocalDate localDate = LocalDate.now();
+        bc.setDate(localDate);
         bc.setValidated(dto.isValidated());
         bc.setSupplierReference(dto.getSupplierReference());
 

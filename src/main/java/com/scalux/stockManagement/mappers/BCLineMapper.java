@@ -9,13 +9,15 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface BCLineMapper {
 
+    // Map articleId -> Article using the helper method
     @Mapping(target = "article", source = "articleId")
     BCLine toEntity(BCLineDTO dto);
 
-    @Mapping(target = "articleId", source = "article.id")
+    // Map Article -> articleId using the helper method
+    @Mapping(target = "articleId", source = "article")
     BCLineDTO toDto(BCLine entity);
 
-    // Helper method: MapStruct uses this to convert articleId to Article
+    // Long -> Article
     default Article map(Long articleId) {
         if (articleId == null) {
             return null;
@@ -25,8 +27,8 @@ public interface BCLineMapper {
         return article;
     }
 
-    // Optional: for reverse mapping Article → articleId
+    // Article -> Long
     default Long map(Article article) {
-        return article == null ? null : article.getId();
+        return (article != null) ? article.getId() : null;
     }
 }

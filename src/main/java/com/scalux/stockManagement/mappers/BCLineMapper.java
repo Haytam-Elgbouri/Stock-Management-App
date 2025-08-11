@@ -6,29 +6,14 @@ import com.scalux.stockManagement.entities.BCLine;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = { ArticleMapper.class })
 public interface BCLineMapper {
 
-    // Map articleId -> Article using the helper method
-    @Mapping(target = "article", source = "articleId")
+    // Map full ArticleDTO -> Article entity
+    @Mapping(target = "bc", ignore = true) // prevent infinite recursion
     BCLine toEntity(BCLineDTO dto);
 
-    // Map Article -> articleId using the helper method
-    @Mapping(target = "articleId", source = "article")
+    // Map full Article entity -> ArticleDTO
     BCLineDTO toDto(BCLine entity);
-
-    // Long -> Article
-    default Article map(Long articleId) {
-        if (articleId == null) {
-            return null;
-        }
-        Article article = new Article();
-        article.setId(articleId);
-        return article;
-    }
-
-    // Article -> Long
-    default Long map(Article article) {
-        return (article != null) ? article.getId() : null;
-    }
 }
+

@@ -42,11 +42,17 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
         bc.setDate(dto.getDate());
         bc.setValidated(dto.isValidated());
         bc.setSupplierReference(dto.getSupplierReference());
+
         List<BCLine> lignes = new ArrayList<>();
         BigDecimal prixTotal = BigDecimal.ZERO;
 
         for (BCLineDTO lineDTO : dto.getLignes()) {
-            Article article = articleRepository.findById(lineDTO.getArticleId())
+            Long articleId = lineDTO.getArticle() != null ? lineDTO.getArticle().getId() : null;
+            if (articleId == null) {
+                throw new RuntimeException("Article ID is required");
+            }
+
+            Article article = articleRepository.findById(articleId)
                     .orElseThrow(() -> new RuntimeException("Article not found"));
 
             BCLine line = new BCLine();
@@ -55,7 +61,8 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
             line.setColor(lineDTO.getColor());
             line.setBc(bc);
 
-            BigDecimal lineTotal = article.getPrixUnitaireHT().multiply(BigDecimal.valueOf(line.getQuantity()));
+            BigDecimal lineTotal = article.getPrixUnitaireHT()
+                    .multiply(BigDecimal.valueOf(line.getQuantity()));
             line.setPrixTotalLigne(lineTotal);
 
             lignes.add(line);
@@ -67,27 +74,20 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
 
         BonDeCommande saved = bcRepository.save(bc);
 
-//        if (saved.isValidated()) {
-            System.out.println("********************************");
+        // Update or create stock
         for (BCLine line : saved.getLignes()) {
-            Optional<Stock> existingStockOpt = stockRepository
-                    .findByArticleIdAndColor(line.getArticle().getId(), line.getColor());
-
-            if (existingStockOpt.isPresent()) {
-                Stock existingStock = existingStockOpt.get();
-                int updatedQuantity = existingStock.getQuantity() + line.getQuantity();
-                existingStock.setQuantity(updatedQuantity);
-                stockRepository.save(existingStock);
-            } else {
-                Stock stock = new Stock();
-                stock.setArticle(line.getArticle());
-                stock.setColor(line.getColor());
-                stock.setQuantity(line.getQuantity());
-                stockRepository.save(stock);
-            }
+            stockRepository.findByArticleIdAndColor(line.getArticle().getId(), line.getColor())
+                    .ifPresentOrElse(existingStock -> {
+                        existingStock.setQuantity(existingStock.getQuantity() + line.getQuantity());
+                        stockRepository.save(existingStock);
+                    }, () -> {
+                        Stock stock = new Stock();
+                        stock.setArticle(line.getArticle());
+                        stock.setColor(line.getColor());
+                        stock.setQuantity(line.getQuantity());
+                        stockRepository.save(stock);
+                    });
         }
-
-//        }
 
         return bcMapper.toDto(saved);
     }
@@ -121,7 +121,7 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
         List<BCLine> lignes = new ArrayList<>();
 
         for (BCLineDTO lineDTO : dto.getLignes()) {
-            Article article = articleRepository.findById(lineDTO.getArticleId())
+            Article article = articleRepository.findById(lineDTO.getArticle().getId())
                     .orElseThrow(() -> new RuntimeException("Article not found"));
 
             BCLine line = new BCLine();

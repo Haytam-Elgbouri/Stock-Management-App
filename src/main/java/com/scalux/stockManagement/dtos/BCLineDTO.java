@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class BCLineDTO {
-    private Long articleId;
+    private ArticleDTO article;
     private String color;
     private Integer quantity;
 }

@@ -24,7 +24,7 @@ public class Article {
     private Family family; // ACCESSORY, BARRE, PIECE
 
     private String type; // e.g., "meter", "unit"
-    private Long longueur;
+    private BigDecimal longueur;
     private BigDecimal prixUnitaireHT;
     private BigDecimal prixTotalHT;
 }

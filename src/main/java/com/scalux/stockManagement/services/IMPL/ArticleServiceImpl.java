@@ -2,12 +2,14 @@ package com.scalux.stockManagement.services.IMPL;
 
 import com.scalux.stockManagement.dtos.ArticleDTO;
 import com.scalux.stockManagement.entities.Article;
+import com.scalux.stockManagement.enums.Family;
 import com.scalux.stockManagement.mappers.ArticleMapper;
 import com.scalux.stockManagement.repositories.ArticleRepository;
 import com.scalux.stockManagement.services.IArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +23,27 @@ public class ArticleServiceImpl implements IArticleService {
     @Override
     public ArticleDTO addArticle(ArticleDTO dto) {
         Article article = articleMapper.toEntity(dto);
-        return articleMapper.toDto(articleRepository.save(article));
+
+        Family family = article.getFamily();
+        BigDecimal prixUnitaire = article.getPrixUnitaireHT();
+        BigDecimal prixTotal = BigDecimal.ZERO;
+
+        if (family == Family.ACCESSORY || family == Family.JOINT) {
+            prixTotal = prixUnitaire;
+        } else if (family == Family.BARRE) {
+            // assuming getLongueur() returns BigDecimal
+            if (article.getLongueur() != null) {
+                prixTotal = prixUnitaire.multiply(article.getLongueur());
+            } else {
+                // handle null length if needed
+                prixTotal = BigDecimal.ZERO;
+            }
+        }
+
+        article.setPrixTotalHT(prixTotal);
+
+        Article saved = articleRepository.save(article);
+        return articleMapper.toDto(saved);
     }
 
     @Override

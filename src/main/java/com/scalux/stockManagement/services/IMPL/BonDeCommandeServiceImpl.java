@@ -46,7 +46,7 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
         BigDecimal prixTotal = BigDecimal.ZERO;
 
         for (BCLineDTO lineDTO : dto.getLignes()) {
-            Article article = articleRepository.findById(lineDTO.getArticle())
+            Article article = articleRepository.findById(lineDTO.getArticleId())
                     .orElseThrow(() -> new RuntimeException("Article not found"));
 
             BCLine line = new BCLine();
@@ -121,7 +121,7 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
         List<BCLine> lignes = new ArrayList<>();
 
         for (BCLineDTO lineDTO : dto.getLignes()) {
-            Article article = articleRepository.findById(lineDTO.getArticle())
+            Article article = articleRepository.findById(lineDTO.getArticleId())
                     .orElseThrow(() -> new RuntimeException("Article not found"));
 
             BCLine line = new BCLine();

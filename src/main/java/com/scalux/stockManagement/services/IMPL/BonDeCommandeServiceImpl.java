@@ -63,7 +63,7 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
             line.setColor(lineDTO.getColor());
             line.setBc(bc);
 
-            BigDecimal lineTotal = article.getPrixUnitaireHT()
+            BigDecimal lineTotal = article.getPrixTotalHT()
                     .multiply(BigDecimal.valueOf(line.getQuantity()));
             line.setPrixTotalLigne(lineTotal);
 

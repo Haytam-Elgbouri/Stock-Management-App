@@ -10,5 +10,7 @@ public class BCLineDTO {
     private ArticleDTO article;
     private String color;
     private Integer quantity;
+    private Integer remaining;
+    private Integer delivered;
     private BigDecimal prixTotalLigne;
 }

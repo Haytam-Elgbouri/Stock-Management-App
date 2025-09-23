@@ -29,6 +29,6 @@ public class BonDeCommande {
 
     private BigDecimal prixTotalHT;
 
-    private boolean isValidated;
+//    private boolean isValidated;
 }
 

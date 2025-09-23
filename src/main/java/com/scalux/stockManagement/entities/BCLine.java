@@ -18,6 +18,8 @@ public class BCLine {
 
     private String color;
     private Integer quantity;
+    private Integer remaining;
+    private Integer delivered;
 
     @ManyToOne
     private Article article;

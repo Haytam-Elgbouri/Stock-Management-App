@@ -1,6 +1,7 @@
 package com.scalux.stockManagement.controllers;
 
 import com.scalux.stockManagement.dtos.BonDeCommandeDTO;
+import com.scalux.stockManagement.dtos.DeliverDTO;
 import com.scalux.stockManagement.services.IBonDeCommandeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -42,9 +43,13 @@ public class BonDeCommandeController {
         bcService.delete(id);
     }
 
-    @PutMapping("/{id}/validate")
-    public ResponseEntity<BonDeCommandeDTO> validateBC(@PathVariable Long id) {
-        return ResponseEntity.ok(bcService.validateBC(id));
-    }
+//    @PutMapping("/{id}/validate")
+//    public ResponseEntity<BonDeCommandeDTO> validateBC(@PathVariable Long id) {
+//        return ResponseEntity.ok(bcService.validateBC(id));
+//    }
 
+    @PostMapping("/deliver")
+    public void deliver(@RequestBody DeliverDTO deliverDTO){
+        bcService.deliver(deliverDTO);
+    }
 }

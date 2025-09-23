@@ -1,6 +1,7 @@
 package com.scalux.stockManagement.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,8 +18,11 @@ public class BCLine {
     private Long id;
 
     private String color;
+    @NotNull
     private Integer quantity;
+    @NotNull
     private Integer remaining;
+    @NotNull
     private Integer delivered;
 
     @ManyToOne

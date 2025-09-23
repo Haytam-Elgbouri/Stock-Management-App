@@ -62,6 +62,7 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
             line.setArticle(article);
             line.setQuantity(lineDTO.getQuantity());
             line.setRemaining(lineDTO.getQuantity());
+            line.setDelivered(0);
             line.setColor(lineDTO.getColor());
             line.setBc(bc);
 
@@ -198,16 +199,23 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
 
     @Override
     public void deliver(DeliverDTO deliverDTO) {
-        System.out.println("******************************PAPAPAPA****************");
-        BCLine bcLine = bcLineRepository.findById(deliverDTO.getId()).orElse(null);
-        bcLine.setDelivered(deliverDTO.getDeliveredQuantity() + bcLine.getDelivered());
-        bcLine.setRemaining(bcLine.getRemaining() - deliverDTO.getDeliveredQuantity());
-        bcLineRepository.save(bcLine);
 
-        StockDTO stockDTO = new StockDTO();
-        stockDTO.setColor(bcLine.getColor());
-        stockDTO.setQuantity(bcLine.getDelivered());
-        stockDTO.setArticle(bcLine.getArticle());
-        stockRepository.save(stockMapper.toEntity(stockDTO));
+        BCLine bcLine = bcLineRepository.findById(deliverDTO.getId()).orElse(null);
+        if (deliverDTO.getDeliveredQuantity() <= bcLine.getRemaining()) {
+            bcLine.setDelivered(deliverDTO.getDeliveredQuantity() + bcLine.getDelivered());
+            bcLine.setRemaining(bcLine.getRemaining() - deliverDTO.getDeliveredQuantity());
+            bcLineRepository.save(bcLine);
+
+            stockRepository.findByArticleIdAndColor(bcLine.getArticle().getId(), bcLine.getColor())
+                    .ifPresentOrElse(existingStock -> {
+                       existingStock.setQuantity(existingStock.getQuantity() + deliverDTO.getDeliveredQuantity());
+                       stockRepository.save(existingStock);
+                    },() -> {StockDTO stockDTO = new StockDTO();
+                            stockDTO.setColor(bcLine.getColor());
+                            stockDTO.setQuantity(deliverDTO.getDeliveredQuantity());
+                            stockDTO.setArticle(bcLine.getArticle());
+                            stockRepository.save(stockMapper.toEntity(stockDTO));
+                    });
+        }
     }
 }

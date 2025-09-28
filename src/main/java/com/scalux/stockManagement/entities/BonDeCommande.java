@@ -25,7 +25,9 @@ public class BonDeCommande {
     private String supplierReference;
 
     @OneToMany(mappedBy = "bc", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BCLine> lignes = new ArrayList<>();
+    private List<BCLine> lines;
+
+    private List<BonDeLivraison> bls;
 
     private BigDecimal prixTotalHT;
 

@@ -201,7 +201,7 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
     public void deliver(DeliverDTO deliverDTO) {
 
         BCLine bcLine = bcLineRepository.findById(deliverDTO.getId()).orElse(null);
-        if (deliverDTO.getDeliveredQuantity() <= bcLine.getRemaining()) {
+//        if (deliverDTO.getDeliveredQuantity() <= bcLine.getRemaining()) {
             bcLine.setDelivered(deliverDTO.getDeliveredQuantity() + bcLine.getDelivered());
             bcLine.setRemaining(bcLine.getRemaining() - deliverDTO.getDeliveredQuantity());
             bcLineRepository.save(bcLine);
@@ -218,4 +218,4 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
                     });
         }
     }
-}
+//}

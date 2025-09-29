@@ -30,6 +30,7 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
         BonDeLivraison bl = new BonDeLivraison();
         bl.setReference(bonDeLivraisonDTO.getReference());
         BonDeCommande bc = bcRepository.findById(id).orElse(null);
+        bl.setBc(bc);
         List<BLLine> lines = new ArrayList<>();
         Long prixTotal = 0L;
 
@@ -48,7 +49,7 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
             line.setQuantity(lineDTO.getQuantity());
             line.setDelivered(0L);
             line.setColor(lineDTO.getColor());
-            line.setBl(bl);
+//            line.setBl(bl);
 
             Long lineTotal = article.getPrixTotalHT() * line.getQuantity();
             line.setPrixTotalLigne(lineTotal);

@@ -16,6 +16,6 @@ public class BLLineDTO {
     private Long delivered;
     private Long remainingAfter;
     private ArticleDTO article;
-    private BonDeLivraison bl;
+//    private BonDeLivraison bl;
     private Long prixTotalLigne;
 }

@@ -5,7 +5,9 @@ import com.scalux.stockManagement.entities.BonDeCommande;
 import com.scalux.stockManagement.entities.BonDeLivraison;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
+@Data
 public class BLLineDTO {
     private Long id;
     private String color;
@@ -13,7 +15,7 @@ public class BLLineDTO {
     private Long remainingBefore;
     private Long delivered;
     private Long remainingAfter;
-    private Article article;
+    private ArticleDTO article;
     private BonDeLivraison bl;
     private Long prixTotalLigne;
 }

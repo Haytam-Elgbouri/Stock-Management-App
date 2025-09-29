@@ -46,10 +46,10 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
 //        bc.setValidated(dto.isValidated());
         bc.setSupplierReference(dto.getSupplierReference());
 
-        List<BCLine> lignes = new ArrayList<>();
-        BigDecimal prixTotal = BigDecimal.ZERO;
+        List<BCLine> lines = new ArrayList<>();
+        Long prixTotal = 0L;
 
-        for (BCLineDTO lineDTO : dto.getLignes()) {
+        for (BCLineDTO lineDTO : dto.getLines()) {
             Long articleId = lineDTO.getArticle() != null ? lineDTO.getArticle().getId() : null;
             if (articleId == null) {
                 throw new RuntimeException("Article ID is required");
@@ -62,19 +62,18 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
             line.setArticle(article);
             line.setQuantity(lineDTO.getQuantity());
             line.setRemaining(lineDTO.getQuantity());
-            line.setDelivered(0);
+            line.setDelivered(0L);
             line.setColor(lineDTO.getColor());
             line.setBc(bc);
 
-            BigDecimal lineTotal = article.getPrixTotalHT()
-                    .multiply(BigDecimal.valueOf(line.getQuantity()));
+            Long lineTotal = article.getPrixTotalHT() * line.getQuantity();
             line.setPrixTotalLigne(lineTotal);
 
-            lignes.add(line);
-            prixTotal = prixTotal.add(lineTotal);
+            lines.add(line);
+            prixTotal = prixTotal + lineTotal;
         }
 
-        bc.setLignes(lignes);
+        bc.setLines(lines);
         bc.setPrixTotalHT(prixTotal);
 
         BonDeCommande saved = bcRepository.save(bc);
@@ -116,16 +115,16 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
                 .orElseThrow(() -> new RuntimeException("BC not found"));
 
         // Clear old lines
-        bcLineRepository.deleteAll(existing.getLignes());
-        existing.getLignes().clear();
+        bcLineRepository.deleteAll(existing.getLines());
+        existing.getLines().clear();
 
         existing.setDate(dto.getDate());
 //        existing.setValidated(dto.isValidated());
 
-        BigDecimal prixTotal = BigDecimal.ZERO;
+        Long prixTotal = 0L;
         List<BCLine> lignes = new ArrayList<>();
 
-        for (BCLineDTO lineDTO : dto.getLignes()) {
+        for (BCLineDTO lineDTO : dto.getLines()) {
             Article article = articleRepository.findById(lineDTO.getArticle().getId())
                     .orElseThrow(() -> new RuntimeException("Article not found"));
 
@@ -135,14 +134,15 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
             line.setColor(lineDTO.getColor());
             line.setBc(existing);
 
-            BigDecimal lineTotal = article.getPrixUnitaireHT().multiply(BigDecimal.valueOf(line.getQuantity()));
+//            BigDecimal lineTotal = article.getPrixUnitaireHT().multiply(BigDecimal.valueOf(line.getQuantity()));
+            Long lineTotal = article.getPrixUnitaireHT() * line.getQuantity();
             line.setPrixTotalLigne(lineTotal);
 
             lignes.add(line);
-            prixTotal = prixTotal.add(lineTotal);
+            prixTotal = prixTotal + lineTotal;
         }
 
-        existing.setLignes(lignes);
+        existing.setLines(lignes);
         existing.setPrixTotalHT(prixTotal);
 
         BonDeCommande saved = bcRepository.save(existing);
@@ -150,7 +150,7 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
         // Optional: You might want to clear old stock lines here if you're updating a previously validated BC
 
 //        if (saved.isValidated()) {
-            for (BCLine line : saved.getLignes()) {
+            for (BCLine line : saved.getLines()) {
                 StockDTO stockDTO = new StockDTO();
                 stockDTO.setArticle(line.getArticle());
                 stockDTO.setColor(line.getColor());
@@ -197,25 +197,26 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
         bcRepository.deleteById(id);
     }
 
-    @Override
-    public void deliver(DeliverDTO deliverDTO) {
-
-        BCLine bcLine = bcLineRepository.findById(deliverDTO.getId()).orElse(null);
-//        if (deliverDTO.getDeliveredQuantity() <= bcLine.getRemaining()) {
-            bcLine.setDelivered(deliverDTO.getDeliveredQuantity() + bcLine.getDelivered());
-            bcLine.setRemaining(bcLine.getRemaining() - deliverDTO.getDeliveredQuantity());
-            bcLineRepository.save(bcLine);
-
-            stockRepository.findByArticleIdAndColor(bcLine.getArticle().getId(), bcLine.getColor())
-                    .ifPresentOrElse(existingStock -> {
-                       existingStock.setQuantity(existingStock.getQuantity() + deliverDTO.getDeliveredQuantity());
-                       stockRepository.save(existingStock);
-                    },() -> {StockDTO stockDTO = new StockDTO();
-                            stockDTO.setColor(bcLine.getColor());
-                            stockDTO.setQuantity(deliverDTO.getDeliveredQuantity());
-                            stockDTO.setArticle(bcLine.getArticle());
-                            stockRepository.save(stockMapper.toEntity(stockDTO));
-                    });
-        }
-    }
-//}
+//    @Override
+//    public void deliver(DeliverDTO deliverDTO) {
+//
+//        BCLine bcLine = bcLineRepository.findById(deliverDTO.getId()).orElse(null);
+////        if (deliverDTO.getDeliveredQuantity() <= bcLine.getRemaining()) {
+//            bcLine.setDelivered(deliverDTO.getDeliveredQuantity() + bcLine.getDelivered());
+//            bcLine.setRemaining(bcLine.getRemaining() - deliverDTO.getDeliveredQuantity());
+//            bcLineRepository.save(bcLine);
+//
+//            stockRepository.findByArticleIdAndColor(bcLine.getArticle().getId(), bcLine.getColor())
+//                    .ifPresentOrElse(existingStock -> {
+//                       existingStock.setQuantity(existingStock.getQuantity() + deliverDTO.getDeliveredQuantity());
+//                       stockRepository.save(existingStock);
+//                    },() -> {StockDTO stockDTO = new StockDTO();
+//                            stockDTO.setColor(bcLine.getColor());
+//                            stockDTO.setQuantity(deliverDTO.getDeliveredQuantity());
+//                            stockDTO.setArticle(bcLine.getArticle());
+//                            stockRepository.save(stockMapper.toEntity(stockDTO));
+//                    });
+//        }
+//    }
+////}
+}

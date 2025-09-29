@@ -8,5 +8,5 @@ public class StockDTO {
     private Long id;
     private Article article;
     private String color;
-    private int quantity;
+    private Long quantity;
 }

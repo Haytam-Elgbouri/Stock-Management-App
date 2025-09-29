@@ -18,6 +18,7 @@ public class BonDeLivraison {
 
     private String reference;
 
+    @OneToMany(mappedBy = "bl")
     private List<BLLine> lines;
 
     @ManyToOne

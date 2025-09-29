@@ -27,9 +27,10 @@ public class BonDeCommande {
     @OneToMany(mappedBy = "bc", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BCLine> lines;
 
+    @OneToMany
     private List<BonDeLivraison> bls;
 
-    private BigDecimal prixTotalHT;
+    private Long prixTotalHT;
 
 //    private boolean isValidated;
 }

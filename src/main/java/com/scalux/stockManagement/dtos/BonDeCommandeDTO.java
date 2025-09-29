@@ -12,8 +12,8 @@ public class BonDeCommandeDTO {
     private String reference;
     private LocalDate date;
     private String supplierReference;
-    private List<BCLineDTO> lignes;
-    private BigDecimal prixTotalHT;
+    private List<BCLineDTO> lines;
+    private Long prixTotalHT;
 //    private boolean isValidated;
 
 }

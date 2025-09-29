@@ -25,18 +25,19 @@ public class ArticleServiceImpl implements IArticleService {
         Article article = articleMapper.toEntity(dto);
 
         Family family = article.getFamily();
-        BigDecimal prixUnitaire = article.getPrixUnitaireHT();
-        BigDecimal prixTotal = BigDecimal.ZERO;
+        Long prixUnitaire = article.getPrixUnitaireHT();
+        Long prixTotal = 0L;
 
         if (family == Family.ACCESSORY || family == Family.JOINT) {
             prixTotal = prixUnitaire;
         } else if (family == Family.BARRE) {
             // assuming getLongueur() returns BigDecimal
             if (article.getLongueur() != null) {
-                prixTotal = prixUnitaire.multiply(article.getLongueur());
+                prixTotal = prixUnitaire * article.getLongueur();
             } else {
                 // handle null length if needed
-                prixTotal = BigDecimal.ZERO;
+                prixTotal = 0L;
+
             }
         }
 

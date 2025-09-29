@@ -11,10 +11,10 @@ public class BCLineDTO {
     private ArticleDTO article;
     private String color;
     @NotNull
-    private Integer quantity;
+    private Long quantity;
     @NotNull
-    private Integer remaining;
+    private Long remaining;
     @NotNull
-    private Integer delivered;
-    private BigDecimal prixTotalLigne;
+    private Long delivered;
+    private Long prixTotalLigne;
 }

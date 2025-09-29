@@ -47,9 +47,9 @@ public class BonDeCommandeController {
 //    public ResponseEntity<BonDeCommandeDTO> validateBC(@PathVariable Long id) {
 //        return ResponseEntity.ok(bcService.validateBC(id));
 //    }
-
-    @PostMapping("/deliver")
-    public void deliver(@RequestBody DeliverDTO deliverDTO){
-        bcService.deliver(deliverDTO);
-    }
+//
+//    @PostMapping("/deliver")
+//    public void deliver(@RequestBody DeliverDTO deliverDTO){
+//        bcService.deliver(deliverDTO);
+//    }
 }

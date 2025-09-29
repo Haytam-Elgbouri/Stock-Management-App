@@ -12,5 +12,5 @@ public interface IBonDeCommandeService {
     BonDeCommandeDTO update(Long id, BonDeCommandeDTO dto);
 //    BonDeCommandeDTO validateBC(Long id);
     void delete(Long id);
-    void deliver(DeliverDTO deliverDTO);
+//    void deliver(DeliverDTO deliverDTO);
 }

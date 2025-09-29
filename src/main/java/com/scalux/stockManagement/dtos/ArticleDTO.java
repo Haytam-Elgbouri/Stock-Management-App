@@ -12,8 +12,8 @@ public class ArticleDTO {
     private String designation;
     private Family family;
     private String type;
-    private BigDecimal longueur;
-    private BigDecimal prixUnitaireHT;
-    private BigDecimal prixTotalHT;
+    private Long longueur;
+    private Long prixUnitaireHT;
+    private Long prixTotalHT;
 }
 

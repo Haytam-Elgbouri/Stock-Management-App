@@ -2,8 +2,11 @@ package com.scalux.stockManagement.services.IMPL;
 
 import com.scalux.stockManagement.dtos.BCLineDTO;
 import com.scalux.stockManagement.dtos.BLLineDTO;
+import com.scalux.stockManagement.dtos.BonDeCommandeDTO;
 import com.scalux.stockManagement.dtos.BonDeLivraisonDTO;
 import com.scalux.stockManagement.entities.*;
+import com.scalux.stockManagement.mappers.ArticleMapper;
+import com.scalux.stockManagement.mappers.BonDeCommandeMapper;
 import com.scalux.stockManagement.mappers.BonDeLivraisonMapper;
 import com.scalux.stockManagement.repositories.ArticleRepository;
 import com.scalux.stockManagement.repositories.BonDeCommandeRepository;
@@ -23,39 +26,35 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
     private final BonDeLivraisonMapper blMapper;
     private final BonDeLivraisonRepository blRepository;
     private final BonDeCommandeRepository bcRepository;
+    private final BonDeCommandeMapper bcMapper;
     private final ArticleRepository articleRepository;
+    private final ArticleMapper articleMapper;
 
     @Override
     public BonDeLivraisonDTO addBL(BonDeLivraisonDTO bonDeLivraisonDTO, Long id) {
         BonDeLivraison bl = new BonDeLivraison();
-        bl.setReference(bonDeLivraisonDTO.getReference());
-        BonDeCommande bc = bcRepository.findById(id).orElse(null);
+        BonDeCommande bc = bcRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Bon de commande not found"));
         bl.setBc(bc);
         List<BLLine> lines = new ArrayList<>();
         Long prixTotal = 0L;
+        BonDeCommandeDTO bcDto = bcMapper.toDto(bc);
 
+        for (BCLineDTO bcLineDTO : bcDto.getLines()){
 
-        for (BLLineDTO lineDTO : bonDeLivraisonDTO.getLines()) {
-            Long articleId = lineDTO.getArticle() != null ? lineDTO.getArticle().getId() : null;
-            if (articleId == null) {
-                throw new RuntimeException("Article ID is required");
-            }
-
-            Article article = articleRepository.findById(articleId)
-                    .orElseThrow(() -> new RuntimeException("Article not found"));
 
             BLLine line = new BLLine();
-            line.setArticle(article);
-            line.setQuantity(lineDTO.getQuantity());
-            line.setDelivered(0L);
-            line.setColor(lineDTO.getColor());
-//            line.setBl(bl);
+            line.setArticle(articleMapper.toEntity(bcLineDTO.getArticle()));
+            line.setColor(bcLineDTO.getColor());
+            line.setQuantity(bcLineDTO.getQuantity());
+            line.setRemainingBefore(bcLineDTO.getRemaining());
 
-            Long lineTotal = article.getPrixTotalHT() * line.getQuantity();
-            line.setPrixTotalLigne(lineTotal);
+            line.setDelivered(0L);
+
+            line.setBl(bl);
 
             lines.add(line);
-            prixTotal = prixTotal + lineTotal;
+
         }
 
         bl.setLines(lines);

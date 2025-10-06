@@ -18,7 +18,7 @@ public class BonDeLivraison {
 
     private String reference;
 
-    @OneToMany(mappedBy = "bl")
+    @OneToMany(mappedBy = "bl", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BLLine> lines;
 
     @ManyToOne

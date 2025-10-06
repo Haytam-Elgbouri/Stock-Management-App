@@ -12,6 +12,6 @@ public class BonDeLivraisonDTO {
     private Long id;
     private String reference;
     private List<BLLineDTO> lines;
-    private BonDeCommandeDTO bc;
+//    private BonDeCommandeDTO bc;
     private Long PrixTotalHT;
 }

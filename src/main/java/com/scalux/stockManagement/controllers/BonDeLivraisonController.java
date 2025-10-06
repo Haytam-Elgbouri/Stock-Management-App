@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @CrossOrigin(origins = "http://localhost:4300")
 @RestController
 @RequiredArgsConstructor
@@ -18,6 +20,16 @@ public class BonDeLivraisonController {
     @PostMapping("/{id}")
     public ResponseEntity<BonDeLivraisonDTO> addBl(@RequestBody BonDeLivraisonDTO bonDeLivraisonDTO, @PathVariable Long id){
         return ResponseEntity.ok(blService.addBL(bonDeLivraisonDTO,id));
+    }
+
+    @GetMapping
+    public List<BonDeLivraisonDTO> getAll(){
+        return blService.getAll();
+    }
+
+    @GetMapping("/{id}")
+    public BonDeLivraisonDTO getById(@PathVariable Long id){
+        return blService.getById(id);
     }
 
 }

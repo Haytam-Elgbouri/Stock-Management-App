@@ -1,9 +1,6 @@
 package com.scalux.stockManagement.services.IMPL;
 
-import com.scalux.stockManagement.dtos.BCLineDTO;
-import com.scalux.stockManagement.dtos.BLLineDTO;
-import com.scalux.stockManagement.dtos.BonDeCommandeDTO;
-import com.scalux.stockManagement.dtos.BonDeLivraisonDTO;
+import com.scalux.stockManagement.dtos.*;
 import com.scalux.stockManagement.entities.*;
 import com.scalux.stockManagement.mappers.ArticleMapper;
 import com.scalux.stockManagement.mappers.BonDeCommandeMapper;
@@ -31,11 +28,12 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
     private final ArticleMapper articleMapper;
 
     @Override
-    public BonDeLivraisonDTO addBL(BonDeLivraisonDTO bonDeLivraisonDTO, Long id) {
+    public BonDeLivraisonDTO addBL(CreateBLDTO createBLDTO, Long id) {
         BonDeLivraison bl = new BonDeLivraison();
         BonDeCommande bc = bcRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Bon de commande not found"));
         bl.setBc(bc);
+        bl.setReference(createBLDTO.getReference());
         List<BLLine> lines = new ArrayList<>();
         Long prixTotal = 0L;
         BonDeCommandeDTO bcDto = bcMapper.toDto(bc);
@@ -78,4 +76,28 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
         return blMapper.toDto(blRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("BL not found")));
     }
+
+
+    //    @Override
+//    public void deliver(DeliverDTO deliverDTO) {
+//
+//        BCLine bcLine = bcLineRepository.findById(deliverDTO.getId()).orElse(null);
+////        if (deliverDTO.getDeliveredQuantity() <= bcLine.getRemaining()) {
+//            bcLine.setDelivered(deliverDTO.getDeliveredQuantity() + bcLine.getDelivered());
+//            bcLine.setRemaining(bcLine.getRemaining() - deliverDTO.getDeliveredQuantity());
+//            bcLineRepository.save(bcLine);
+//
+//            stockRepository.findByArticleIdAndColor(bcLine.getArticle().getId(), bcLine.getColor())
+//                    .ifPresentOrElse(existingStock -> {
+//                       existingStock.setQuantity(existingStock.getQuantity() + deliverDTO.getDeliveredQuantity());
+//                       stockRepository.save(existingStock);
+//                    },() -> {StockDTO stockDTO = new StockDTO();
+//                            stockDTO.setColor(bcLine.getColor());
+//                            stockDTO.setQuantity(deliverDTO.getDeliveredQuantity());
+//                            stockDTO.setArticle(bcLine.getArticle());
+//                            stockRepository.save(stockMapper.toEntity(stockDTO));
+//                    });
+//        }
+//    }
+////}
 }

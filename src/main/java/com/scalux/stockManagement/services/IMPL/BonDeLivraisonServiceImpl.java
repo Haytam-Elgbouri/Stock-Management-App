@@ -5,9 +5,8 @@ import com.scalux.stockManagement.entities.*;
 import com.scalux.stockManagement.mappers.ArticleMapper;
 import com.scalux.stockManagement.mappers.BonDeCommandeMapper;
 import com.scalux.stockManagement.mappers.BonDeLivraisonMapper;
-import com.scalux.stockManagement.repositories.ArticleRepository;
-import com.scalux.stockManagement.repositories.BonDeCommandeRepository;
-import com.scalux.stockManagement.repositories.BonDeLivraisonRepository;
+import com.scalux.stockManagement.mappers.StockMapper;
+import com.scalux.stockManagement.repositories.*;
 import com.scalux.stockManagement.services.IBonDeLivraisonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,11 +20,14 @@ import java.util.stream.Collectors;
 public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
 
     private final BonDeLivraisonMapper blMapper;
+    private final BLLineRepository blLineRepository;
     private final BonDeLivraisonRepository blRepository;
     private final BonDeCommandeRepository bcRepository;
     private final BonDeCommandeMapper bcMapper;
     private final ArticleRepository articleRepository;
     private final ArticleMapper articleMapper;
+    private final StockRepository stockRepository;
+    private final StockMapper stockMapper;
 
     @Override
     public BonDeLivraisonDTO addBL(CreateBLDTO createBLDTO, Long id) {
@@ -78,26 +80,26 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
     }
 
 
-    //    @Override
-//    public void deliver(DeliverDTO deliverDTO) {
-//
-//        BCLine bcLine = bcLineRepository.findById(deliverDTO.getId()).orElse(null);
-////        if (deliverDTO.getDeliveredQuantity() <= bcLine.getRemaining()) {
-//            bcLine.setDelivered(deliverDTO.getDeliveredQuantity() + bcLine.getDelivered());
-//            bcLine.setRemaining(bcLine.getRemaining() - deliverDTO.getDeliveredQuantity());
-//            bcLineRepository.save(bcLine);
-//
-//            stockRepository.findByArticleIdAndColor(bcLine.getArticle().getId(), bcLine.getColor())
-//                    .ifPresentOrElse(existingStock -> {
-//                       existingStock.setQuantity(existingStock.getQuantity() + deliverDTO.getDeliveredQuantity());
-//                       stockRepository.save(existingStock);
-//                    },() -> {StockDTO stockDTO = new StockDTO();
-//                            stockDTO.setColor(bcLine.getColor());
-//                            stockDTO.setQuantity(deliverDTO.getDeliveredQuantity());
-//                            stockDTO.setArticle(bcLine.getArticle());
-//                            stockRepository.save(stockMapper.toEntity(stockDTO));
-//                    });
-//        }
-//    }
-////}
+    @Override
+    public void deliver(DeliverDTO deliverDTO) {
+
+        BLLine blLine = blLineRepository.findById(deliverDTO.getId()).orElse(null);
+//        if (deliverDTO.getDeliveredQuantity() <= bcLine.getRemaining()) {
+            blLine.setDelivered(deliverDTO.getDeliveredQuantity() + blLine.getDelivered());
+            blLine.setRemainingAfter(blLine.getRemainingBefore() - deliverDTO.getDeliveredQuantity());
+            blLineRepository.save(blLine);
+
+            stockRepository.findByArticleIdAndColor(blLine.getArticle().getId(), blLine.getColor())
+                    .ifPresentOrElse(existingStock -> {
+                       existingStock.setQuantity(existingStock.getQuantity() + deliverDTO.getDeliveredQuantity());
+                       stockRepository.save(existingStock);
+                    },() -> {StockDTO stockDTO = new StockDTO();
+                            stockDTO.setColor(blLine.getColor());
+                            stockDTO.setQuantity(deliverDTO.getDeliveredQuantity());
+                            stockDTO.setArticle(blLine.getArticle());
+                            stockRepository.save(stockMapper.toEntity(stockDTO));
+                    });
+    }
+
 }
+

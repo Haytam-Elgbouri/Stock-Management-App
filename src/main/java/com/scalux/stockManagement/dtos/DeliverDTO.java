@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class DeliverDTO {
     private Long id;
-    private Integer deliveredQuantity;
+    private Long deliveredQuantity;
 }

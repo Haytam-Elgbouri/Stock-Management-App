@@ -3,6 +3,7 @@ package com.scalux.stockManagement.controllers;
 import com.scalux.stockManagement.dtos.BonDeCommandeDTO;
 import com.scalux.stockManagement.dtos.BonDeLivraisonDTO;
 import com.scalux.stockManagement.dtos.CreateBLDTO;
+import com.scalux.stockManagement.dtos.DeliverDTO;
 import com.scalux.stockManagement.services.IBonDeLivraisonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,11 @@ public class BonDeLivraisonController {
     @GetMapping("/{id}")
     public BonDeLivraisonDTO getById(@PathVariable Long id){
         return blService.getById(id);
+    }
+
+    @PostMapping("/deliver")
+    public void deliver(@RequestBody DeliverDTO deliverDTO){
+        blService.deliver(deliverDTO);
     }
 
 }

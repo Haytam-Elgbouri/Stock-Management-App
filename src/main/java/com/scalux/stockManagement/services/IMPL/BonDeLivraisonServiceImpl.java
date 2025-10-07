@@ -23,6 +23,7 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
     private final BLLineRepository blLineRepository;
     private final BonDeLivraisonRepository blRepository;
     private final BonDeCommandeRepository bcRepository;
+    private final BCLineRepository bcLineRepository;
     private final BonDeCommandeMapper bcMapper;
     private final ArticleRepository articleRepository;
     private final ArticleMapper articleMapper;
@@ -50,7 +51,8 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
             line.setRemainingBefore(bcLineDTO.getRemaining());
 
             line.setDelivered(0L);
-
+            BCLine bcLine = bcLineRepository.findById(bcLineDTO.getId()).orElseThrow();
+            line.setBcLine(bcLine);
             line.setBl(bl);
 
             lines.add(line);
@@ -88,6 +90,13 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
             blLine.setDelivered(deliverDTO.getDeliveredQuantity() + blLine.getDelivered());
             blLine.setRemainingAfter(blLine.getRemainingBefore() - deliverDTO.getDeliveredQuantity());
             blLineRepository.save(blLine);
+
+            BCLine bcLine = blLine.getBcLine();
+            if (bcLine != null) {
+                bcLine.setDelivered(bcLine.getDelivered() + deliverDTO.getDeliveredQuantity());
+                bcLine.setRemaining(bcLine.getRemaining() - deliverDTO.getDeliveredQuantity());
+                bcLineRepository.save(bcLine);
+            }
 
             stockRepository.findByArticleIdAndColor(blLine.getArticle().getId(), blLine.getColor())
                     .ifPresentOrElse(existingStock -> {

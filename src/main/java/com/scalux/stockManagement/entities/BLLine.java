@@ -30,5 +30,8 @@ public class BLLine {
     @ManyToOne
     private BonDeLivraison bl;
 
+    @ManyToOne
+    private BCLine bcLine;
+
     private Long prixTotalLigne;
 }

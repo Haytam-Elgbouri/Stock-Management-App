@@ -27,7 +27,7 @@ public class BonDeCommande {
     @OneToMany(mappedBy = "bc", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BCLine> lines;
 
-    @OneToMany
+    @OneToMany(mappedBy = "bc", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BonDeLivraison> bls;
 
     private Long prixTotalHT;

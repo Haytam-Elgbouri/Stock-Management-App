@@ -13,6 +13,7 @@ public class BonDeCommandeDTO {
     private LocalDate date;
     private String supplierReference;
     private List<BCLineDTO> lines;
+    private List<BonDeLivraisonDTO> bls;
     private Long prixTotalHT;
 //    private boolean isValidated;
 

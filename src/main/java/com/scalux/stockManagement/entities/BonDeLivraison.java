@@ -25,4 +25,6 @@ public class BonDeLivraison {
     private BonDeCommande bc;
 
     private Long PrixTotalHT;
+
+    private Boolean isValidated;
 }

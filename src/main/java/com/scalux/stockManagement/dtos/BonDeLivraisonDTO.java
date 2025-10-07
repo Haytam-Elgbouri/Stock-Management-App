@@ -14,4 +14,6 @@ public class BonDeLivraisonDTO {
     private List<BLLineDTO> lines;
 //    private BonDeCommandeDTO bc;
     private Long PrixTotalHT;
+    private Boolean isValidated;
+
 }

@@ -26,7 +26,6 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
     private final BonDeCommandeRepository bcRepository;
     private final BCLineRepository bcLineRepository;
     private final BonDeCommandeMapper bcMapper;
-    private final ArticleRepository articleRepository;
     private final ArticleMapper articleMapper;
     private final StockRepository stockRepository;
     private final StockMapper stockMapper;
@@ -90,10 +89,13 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
     public void deliver(DeliverDTO deliverDTO) {
 
         BLLine blLine = blLineRepository.findById(deliverDTO.getId()).orElse(null);
+        if (blLine.getBl().getIsValidated() == false){
             blLine.setDelivered(deliverDTO.getDeliveredQuantity() + blLine.getDelivered());
             blLine.setRemainingAfter(blLine.getRemainingBefore() - deliverDTO.getDeliveredQuantity());
             blLineRepository.save(blLine);
-
+        }else {
+            throw new RuntimeException("BL Already validated");
+        }
 
     }
 

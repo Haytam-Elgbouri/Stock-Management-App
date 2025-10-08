@@ -11,6 +11,7 @@ import com.scalux.stockManagement.services.IBonDeLivraisonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,6 +37,8 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
         BonDeCommande bc = bcRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Bon de commande not found"));
         bl.setBc(bc);
+        LocalDate localDate = LocalDate.now();
+        bl.setDate(localDate);
         bl.setReference(createBLDTO.getReference());
         List<BLLine> lines = new ArrayList<>();
         Long prixTotal = 0L;
@@ -61,6 +64,7 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
 
         bl.setLines(lines);
         bl.setPrixTotalHT(prixTotal);
+        bl.setIsValidated(false);
 
         BonDeLivraison saved = blRepository.save(bl);
 
@@ -86,29 +90,43 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
     public void deliver(DeliverDTO deliverDTO) {
 
         BLLine blLine = blLineRepository.findById(deliverDTO.getId()).orElse(null);
-//        if (deliverDTO.getDeliveredQuantity() <= bcLine.getRemaining()) {
             blLine.setDelivered(deliverDTO.getDeliveredQuantity() + blLine.getDelivered());
             blLine.setRemainingAfter(blLine.getRemainingBefore() - deliverDTO.getDeliveredQuantity());
             blLineRepository.save(blLine);
 
+
+    }
+
+    @Override
+    public void validate(Long id) {
+        BonDeLivraison bonDeLivraison = blRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Bon de livraison not found"));
+
+
+        bonDeLivraison.setIsValidated(true);
+        blRepository.save(bonDeLivraison);
+
+        for (BLLine blLine : bonDeLivraison.getLines()) {
+            stockRepository.findByArticleIdAndColor(blLine.getArticle().getId(), blLine.getColor())
+                .ifPresentOrElse(existingStock -> {
+                    existingStock.setQuantity(existingStock.getQuantity() + blLine.getDelivered());
+                    stockRepository.save(existingStock);
+                }, () -> {
+                    StockDTO stockDTO = new StockDTO();
+                    stockDTO.setColor(blLine.getColor());
+                    stockDTO.setQuantity(blLine.getDelivered());
+                    stockDTO.setArticle(blLine.getArticle());
+                    stockRepository.save(stockMapper.toEntity(stockDTO));
+                });
             BCLine bcLine = blLine.getBcLine();
             if (bcLine != null) {
-                bcLine.setDelivered(bcLine.getDelivered() + deliverDTO.getDeliveredQuantity());
-                bcLine.setRemaining(bcLine.getRemaining() - deliverDTO.getDeliveredQuantity());
+                bcLine.setDelivered(bcLine.getDelivered() + blLine.getDelivered());
+                bcLine.setRemaining(bcLine.getRemaining() - blLine.getDelivered());
                 bcLineRepository.save(bcLine);
             }
-
-            stockRepository.findByArticleIdAndColor(blLine.getArticle().getId(), blLine.getColor())
-                    .ifPresentOrElse(existingStock -> {
-                       existingStock.setQuantity(existingStock.getQuantity() + deliverDTO.getDeliveredQuantity());
-                       stockRepository.save(existingStock);
-                    },() -> {StockDTO stockDTO = new StockDTO();
-                            stockDTO.setColor(blLine.getColor());
-                            stockDTO.setQuantity(deliverDTO.getDeliveredQuantity());
-                            stockDTO.setArticle(blLine.getArticle());
-                            stockRepository.save(stockMapper.toEntity(stockDTO));
-                    });
+        }
     }
+
 
 }
 

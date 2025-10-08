@@ -1,9 +1,6 @@
 package com.scalux.stockManagement.services;
 
-import com.scalux.stockManagement.dtos.BonDeCommandeDTO;
-import com.scalux.stockManagement.dtos.BonDeLivraisonDTO;
-import com.scalux.stockManagement.dtos.CreateBLDTO;
-import com.scalux.stockManagement.dtos.DeliverDTO;
+import com.scalux.stockManagement.dtos.*;
 
 import java.util.List;
 
@@ -12,5 +9,5 @@ public interface IBonDeLivraisonService {
     List<BonDeLivraisonDTO> getAll();
     BonDeLivraisonDTO getById(Long id);
     void deliver(DeliverDTO deliverDTO);
-
+    void validate(Long id);
 }

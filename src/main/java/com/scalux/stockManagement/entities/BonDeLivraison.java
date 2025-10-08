@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -17,6 +18,8 @@ public class BonDeLivraison {
     private Long id;
 
     private String reference;
+
+    private LocalDate date;
 
     @OneToMany(mappedBy = "bl", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BLLine> lines;

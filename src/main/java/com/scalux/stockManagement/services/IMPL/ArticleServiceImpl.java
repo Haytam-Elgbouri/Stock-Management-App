@@ -29,13 +29,11 @@ public class ArticleServiceImpl implements IArticleService {
         Long prixTotal = 0L;
 
         if (family == Family.ACCESSORY || family == Family.JOINT) {
-            prixTotal = prixUnitaire;
+            prixTotal = article.getPrixTotalHT();
         } else if (family == Family.BARRE) {
-            // assuming getLongueur() returns BigDecimal
             if (article.getLongueur() != null) {
                 prixTotal = prixUnitaire * article.getLongueur();
             } else {
-                // handle null length if needed
                 prixTotal = 0L;
 
             }

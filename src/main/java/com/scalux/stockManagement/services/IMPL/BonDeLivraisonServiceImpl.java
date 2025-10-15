@@ -109,22 +109,24 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
         blRepository.save(bonDeLivraison);
 
         for (BLLine blLine : bonDeLivraison.getLines()) {
-            stockRepository.findByArticleIdAndColor(blLine.getArticle().getId(), blLine.getColor())
-                .ifPresentOrElse(existingStock -> {
-                    existingStock.setQuantity(existingStock.getQuantity() + blLine.getDelivered());
-                    stockRepository.save(existingStock);
-                }, () -> {
-                    StockDTO stockDTO = new StockDTO();
-                    stockDTO.setColor(blLine.getColor());
-                    stockDTO.setQuantity(blLine.getDelivered());
-                    stockDTO.setArticle(blLine.getArticle());
-                    stockRepository.save(stockMapper.toEntity(stockDTO));
-                });
-            BCLine bcLine = blLine.getBcLine();
-            if (bcLine != null) {
-                bcLine.setDelivered(bcLine.getDelivered() + blLine.getDelivered());
-                bcLine.setRemaining(bcLine.getRemaining() - blLine.getDelivered());
-                bcLineRepository.save(bcLine);
+            if (blLine.getDelivered() != 0) {
+                stockRepository.findByArticleIdAndColor(blLine.getArticle().getId(), blLine.getColor())
+                        .ifPresentOrElse(existingStock -> {
+                            existingStock.setQuantity(existingStock.getQuantity() + blLine.getDelivered());
+                            stockRepository.save(existingStock);
+                        }, () -> {
+                            StockDTO stockDTO = new StockDTO();
+                            stockDTO.setColor(blLine.getColor());
+                            stockDTO.setQuantity(blLine.getDelivered());
+                            stockDTO.setArticle(blLine.getArticle());
+                            stockRepository.save(stockMapper.toEntity(stockDTO));
+                        });
+                BCLine bcLine = blLine.getBcLine();
+                if (bcLine != null) {
+                    bcLine.setDelivered(bcLine.getDelivered() + blLine.getDelivered());
+                    bcLine.setRemaining(bcLine.getRemaining() - blLine.getDelivered());
+                    bcLineRepository.save(bcLine);
+                }
             }
         }
     }

@@ -31,9 +31,9 @@ public class BonDeReceptionController {
         return blService.getById(id);
     }
 
-    @PostMapping("/deliver")
-    public void deliver(@RequestBody BRRecieveDTO brRecieveDTO){
-        blService.deliverBR(brRecieveDTO);
+    @PostMapping("/receive")
+    public void receive(@RequestBody BRRecieveDTO brRecieveDTO){
+        blService.receiveBR(brRecieveDTO);
     }
 
     @PutMapping("/validate/{id}")

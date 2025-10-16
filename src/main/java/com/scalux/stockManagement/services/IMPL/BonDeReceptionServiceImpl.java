@@ -100,7 +100,7 @@ public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
 //    }
 
     @Override
-    public void deliverBR(BRRecieveDTO brRecieveDTO) {
+    public void receiveBR(BRRecieveDTO brRecieveDTO) {
 
         // Fetch the BR
         BonDeReception br = brRepository.findById(brRecieveDTO.getBrId())

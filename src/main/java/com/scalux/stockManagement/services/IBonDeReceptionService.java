@@ -10,7 +10,7 @@ public interface IBonDeReceptionService {
     BonDeReceptionDTO getById(Long id);
 //    void deliver(RecieveDTO recieveDTO);
 
-    void deliverBR(BRRecieveDTO brRecieveDTO);
+    void receiveBR(BRRecieveDTO brRecieveDTO);
 
     void validate(Long id);
 }

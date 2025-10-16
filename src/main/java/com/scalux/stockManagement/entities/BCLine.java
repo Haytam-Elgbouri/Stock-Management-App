@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @Entity
 @Data
 @NoArgsConstructor
@@ -23,7 +21,7 @@ public class BCLine {
     @NotNull
     private Long remaining;
     @NotNull
-    private Long delivered;
+    private Long received;
 
     @ManyToOne
     private Article article;

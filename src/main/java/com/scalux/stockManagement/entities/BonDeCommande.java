@@ -5,9 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -28,7 +26,7 @@ public class BonDeCommande {
     private List<BCLine> lines;
 
     @OneToMany(mappedBy = "bc", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BonDeLivraison> bls;
+    private List<BonDeReception> brs;
 
     private Long prixTotalHT;
 

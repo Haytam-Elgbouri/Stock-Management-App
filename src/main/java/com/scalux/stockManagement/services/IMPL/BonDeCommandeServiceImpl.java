@@ -2,7 +2,6 @@ package com.scalux.stockManagement.services.IMPL;
 
 import com.scalux.stockManagement.dtos.BCLineDTO;
 import com.scalux.stockManagement.dtos.BonDeCommandeDTO;
-import com.scalux.stockManagement.dtos.DeliverDTO;
 import com.scalux.stockManagement.dtos.StockDTO;
 import com.scalux.stockManagement.entities.Article;
 import com.scalux.stockManagement.entities.BCLine;
@@ -18,11 +17,9 @@ import com.scalux.stockManagement.services.IBonDeCommandeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,7 +59,7 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
             line.setArticle(article);
             line.setQuantity(lineDTO.getQuantity());
             line.setRemaining(lineDTO.getQuantity());
-            line.setDelivered(0L);
+            line.setReceived(0L);
             line.setColor(lineDTO.getColor());
             line.setBc(bc);
 

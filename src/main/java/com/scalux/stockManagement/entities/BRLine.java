@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class BLLine {
+public class BRLine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,7 +20,7 @@ public class BLLine {
 
     private Long remainingBefore;
 
-    private Long delivered;
+    private Long received;
 
     private Long remainingAfter;
 
@@ -28,7 +28,7 @@ public class BLLine {
     private Article article;
 
     @ManyToOne
-    private BonDeLivraison bl;
+    private BonDeReception br;
 
     @ManyToOne
     private BCLine bcLine;

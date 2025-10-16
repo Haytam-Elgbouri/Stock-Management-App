@@ -1,19 +1,14 @@
 package com.scalux.stockManagement.dtos;
 
-import com.scalux.stockManagement.entities.Article;
-import com.scalux.stockManagement.entities.BonDeCommande;
-import com.scalux.stockManagement.entities.BonDeLivraison;
-import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class BLLineDTO {
+public class BRLineDTO {
     private Long id;
     private String color;
     private Long quantity;
     private Long remainingBefore;
-    private Long delivered;
+    private Long received;
     private Long remainingAfter;
     private ArticleDTO article;
 //    private BonDeLivraison bl;

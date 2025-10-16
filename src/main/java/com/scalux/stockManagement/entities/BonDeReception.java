@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class BonDeLivraison {
+public class BonDeReception {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,8 +21,8 @@ public class BonDeLivraison {
 
     private LocalDate date;
 
-    @OneToMany(mappedBy = "bl", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BLLine> lines;
+    @OneToMany(mappedBy = "br", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BRLine> lines;
 
     @ManyToOne
     private BonDeCommande bc;

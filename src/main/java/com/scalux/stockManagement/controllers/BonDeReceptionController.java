@@ -1,7 +1,7 @@
 package com.scalux.stockManagement.controllers;
 
 import com.scalux.stockManagement.dtos.*;
-import com.scalux.stockManagement.services.IBonDeLivraisonService;
+import com.scalux.stockManagement.services.IBonDeReceptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,22 +12,22 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/bls")
-public class BonDeLivraisonController {
+public class BonDeReceptionController {
 
-    private final IBonDeLivraisonService blService;
+    private final IBonDeReceptionService blService;
 
     @PostMapping("/{id}")
-    public ResponseEntity<BonDeLivraisonDTO> addBl(@RequestBody CreateBLDTO createBLDTO, @PathVariable Long id){
-        return ResponseEntity.ok(blService.addBL(createBLDTO,id));
+    public ResponseEntity<BonDeReceptionDTO> addBl(@RequestBody CreateBRDTO createBRDTO, @PathVariable Long id){
+        return ResponseEntity.ok(blService.addBR(createBRDTO,id));
     }
 
     @GetMapping
-    public List<BonDeLivraisonDTO> getAll(){
+    public List<BonDeReceptionDTO> getAll(){
         return blService.getAll();
     }
 
     @GetMapping("/{id}")
-    public BonDeLivraisonDTO getById(@PathVariable Long id){
+    public BonDeReceptionDTO getById(@PathVariable Long id){
         return blService.getById(id);
     }
 

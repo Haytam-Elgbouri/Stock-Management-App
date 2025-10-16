@@ -2,7 +2,6 @@ package com.scalux.stockManagement.dtos;
 
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -13,7 +12,7 @@ public class BonDeCommandeDTO {
     private LocalDate date;
     private String supplierReference;
     private List<BCLineDTO> lines;
-    private List<BonDeLivraisonDTO> bls;
+    private List<BonDeReceptionDTO> brs;
     private Long prixTotalHT;
 //    private boolean isValidated;
 

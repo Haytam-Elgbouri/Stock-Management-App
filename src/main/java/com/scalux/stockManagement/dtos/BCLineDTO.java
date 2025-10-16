@@ -15,6 +15,6 @@ public class BCLineDTO {
     @NotNull
     private Long remaining;
     @NotNull
-    private Long delivered;
+    private Long received;
     private Long prixTotalLigne;
 }

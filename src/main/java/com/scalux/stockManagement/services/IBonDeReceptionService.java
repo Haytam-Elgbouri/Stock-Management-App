@@ -8,6 +8,9 @@ public interface IBonDeReceptionService {
     BonDeReceptionDTO addBR(CreateBRDTO createBRDTO, Long id);
     List<BonDeReceptionDTO> getAll();
     BonDeReceptionDTO getById(Long id);
-    void deliver(DeliverDTO deliverDTO);
+//    void deliver(RecieveDTO recieveDTO);
+
+    void deliverBR(BRRecieveDTO brRecieveDTO);
+
     void validate(Long id);
 }

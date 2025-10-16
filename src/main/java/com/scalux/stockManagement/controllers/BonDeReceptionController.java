@@ -11,13 +11,13 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:4300")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/bls")
+@RequestMapping("/api/brs")
 public class BonDeReceptionController {
 
     private final IBonDeReceptionService blService;
 
     @PostMapping("/{id}")
-    public ResponseEntity<BonDeReceptionDTO> addBl(@RequestBody CreateBRDTO createBRDTO, @PathVariable Long id){
+    public ResponseEntity<BonDeReceptionDTO> addBr(@RequestBody CreateBRDTO createBRDTO, @PathVariable Long id){
         return ResponseEntity.ok(blService.addBR(createBRDTO,id));
     }
 
@@ -32,8 +32,8 @@ public class BonDeReceptionController {
     }
 
     @PostMapping("/deliver")
-    public void deliver(@RequestBody DeliverDTO deliverDTO){
-        blService.deliver(deliverDTO);
+    public void deliver(@RequestBody BRRecieveDTO brRecieveDTO){
+        blService.deliverBR(brRecieveDTO);
     }
 
     @PutMapping("/validate/{id}")

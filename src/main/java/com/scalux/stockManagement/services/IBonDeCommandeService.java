@@ -1,7 +1,6 @@
 package com.scalux.stockManagement.services;
 
 import com.scalux.stockManagement.dtos.BonDeCommandeDTO;
-import com.scalux.stockManagement.dtos.DeliverDTO;
 
 import java.util.List;
 

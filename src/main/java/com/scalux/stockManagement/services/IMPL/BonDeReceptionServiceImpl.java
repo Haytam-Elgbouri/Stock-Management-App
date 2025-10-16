@@ -85,19 +85,44 @@ public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
     }
 
 
-    @Override
-    public void deliver(DeliverDTO deliverDTO) {
+//    @Override
+//    public void deliver(RecieveDTO recieveDTO) {
+//
+//        BRLine BRLine = brLineRepository.findById(recieveDTO.getId()).orElse(null);
+//        if (BRLine.getBr().getIsValidated() == false){
+//            BRLine.setReceived(recieveDTO.getReceivedQuantity() + BRLine.getReceived());
+//            BRLine.setRemainingAfter(BRLine.getRemainingBefore() - recieveDTO.getReceivedQuantity());
+//            brLineRepository.save(BRLine);
+//        }else {
+//            throw new RuntimeException("BR Already validated");
+//        }
+//
+//    }
 
-        BRLine BRLine = brLineRepository.findById(deliverDTO.getId()).orElse(null);
-        if (BRLine.getBr().getIsValidated() == false){
-            BRLine.setReceived(deliverDTO.getReceivedQuantity() + BRLine.getReceived());
-            BRLine.setRemainingAfter(BRLine.getRemainingBefore() - deliverDTO.getReceivedQuantity());
-            brLineRepository.save(BRLine);
-        }else {
+    @Override
+    public void deliverBR(BRRecieveDTO brRecieveDTO) {
+
+        // Fetch the BR
+        BonDeReception br = brRepository.findById(brRecieveDTO.getBrId())
+                .orElseThrow(() -> new RuntimeException("BR not found"));
+
+        if (Boolean.TRUE.equals(br.getIsValidated())) {
             throw new RuntimeException("BR Already validated");
         }
 
+        // Deliver each line
+        for (BRLineReceiveDTO lineDTO : brRecieveDTO.getLines()) {
+            BRLine line = brLineRepository.findById(lineDTO.getId())
+                    .orElseThrow(() -> new RuntimeException("BRLine not found: " + lineDTO.getId()));
+
+            line.setReceived(lineDTO.getReceivedQuantity() + line.getReceived());
+            line.setRemainingAfter(line.getRemainingBefore() - lineDTO.getReceivedQuantity());
+
+            brLineRepository.save(line);
+        }
     }
+
+
 
     @Override
     public void validate(Long id) {

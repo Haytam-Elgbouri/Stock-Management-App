@@ -60,10 +60,10 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
             line.setQuantity(lineDTO.getQuantity());
             line.setRemaining(lineDTO.getQuantity());
             line.setReceived(0L);
-            line.setColor(lineDTO.getColor());
+//            line.setColor(lineDTO.getColor());
             line.setBc(bc);
 
-            Long lineTotal = article.getPrixTotalHT() * line.getQuantity();
+            Long lineTotal = line.getQuantity();
             line.setPrixTotalLigne(lineTotal);
 
             lines.add(line);
@@ -128,11 +128,11 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
             BCLine line = new BCLine();
             line.setArticle(article);
             line.setQuantity(lineDTO.getQuantity());
-            line.setColor(lineDTO.getColor());
+//            line.setColor(lineDTO.getColor());
             line.setBc(existing);
 
 //            BigDecimal lineTotal = article.getPrixUnitaireHT().multiply(BigDecimal.valueOf(line.getQuantity()));
-            Long lineTotal = article.getPrixUnitaireHT() * line.getQuantity();
+            Long lineTotal = line.getQuantity();
             line.setPrixTotalLigne(lineTotal);
 
             lignes.add(line);
@@ -150,7 +150,7 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
             for (BCLine line : saved.getLines()) {
                 StockDTO stockDTO = new StockDTO();
                 stockDTO.setArticle(line.getArticle());
-                stockDTO.setColor(line.getColor());
+//                stockDTO.setColor(line.getColor());
                 stockDTO.setQuantity(line.getQuantity());
 
                 Stock stock = stockMapper.toEntity(stockDTO);

@@ -15,7 +15,7 @@ public class BCLine {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String color;
+//    private String color;
     @NotNull
     private Long quantity;
     @NotNull

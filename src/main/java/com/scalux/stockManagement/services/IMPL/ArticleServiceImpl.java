@@ -1,15 +1,22 @@
 package com.scalux.stockManagement.services.IMPL;
 
 import com.scalux.stockManagement.dtos.ArticleDTO;
+import com.scalux.stockManagement.dtos.BCLineDTO;
+import com.scalux.stockManagement.dtos.ColorPriceDTO;
 import com.scalux.stockManagement.entities.Article;
+import com.scalux.stockManagement.entities.ArticleColorPrice;
+import com.scalux.stockManagement.entities.Color;
 import com.scalux.stockManagement.enums.Family;
 import com.scalux.stockManagement.mappers.ArticleMapper;
+import com.scalux.stockManagement.repositories.ArticleColorPriceRepository;
 import com.scalux.stockManagement.repositories.ArticleRepository;
+import com.scalux.stockManagement.repositories.ColorRepository;
 import com.scalux.stockManagement.services.IArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,31 +26,50 @@ public class ArticleServiceImpl implements IArticleService {
 
     private final ArticleRepository articleRepository;
     private final ArticleMapper articleMapper;
+    private final ColorRepository colorRepository;
+    private final ArticleColorPriceRepository articleColorPriceRepository;
 
     @Override
     public ArticleDTO addArticle(ArticleDTO dto) {
         Article article = articleMapper.toEntity(dto);
-
         Family family = article.getFamily();
-        Long prixUnitaire = article.getPrixUnitaireHT();
-        Long prixTotal = 0L;
 
-        if (family == Family.ACCESSORY || family == Family.JOINT) {
-            prixTotal = article.getPrixTotalHT();
-        } else if (family == Family.BARRE) {
-            if (article.getLongueur() != null) {
-                prixTotal = prixUnitaire * article.getLongueur();
-            } else {
-                prixTotal = 0L;
+        // Initialize colorPrices
+        article.setColorPrices(new ArrayList<>());
 
+        // Save article
+        Article savedArticle = articleRepository.save(article);
+
+        if (dto.getColorPrices() != null) {
+            for (ColorPriceDTO colorPriceDTO : dto.getColorPrices()) {
+                ArticleColorPrice articleColorPrice = new ArticleColorPrice();
+                articleColorPrice.setArticle(savedArticle);
+
+                Color color = colorRepository.findById(colorPriceDTO.getColorId())
+                        .orElseThrow(() -> new RuntimeException("Color not found"));
+                articleColorPrice.setColor(color);
+
+                Long prixUnitaire = colorPriceDTO.getPrixUnitaireHT();
+                Long prixTotal = (family == Family.BARRE && article.getLongueur() != null)
+                        ? prixUnitaire * article.getLongueur()
+                        : colorPriceDTO.getPrixTotalHT();
+
+                articleColorPrice.setPrixUnitaireHT(prixUnitaire);
+                articleColorPrice.setPrixTotalHT(prixTotal);
+
+                // Save color price
+                ArticleColorPrice savedColorPrice = articleColorPriceRepository.save(articleColorPrice);
+
+                // Add to savedArticle
+                savedArticle.getColorPrices().add(savedColorPrice);
             }
         }
 
-        article.setPrixTotalHT(prixTotal);
-
-        Article saved = articleRepository.save(article);
-        return articleMapper.toDto(saved);
+        // ✅ Map only savedArticle -> DTO
+        return articleMapper.toDto(savedArticle);
     }
+
+
 
     @Override
     public List<ArticleDTO> getAll() {
@@ -67,7 +93,6 @@ public class ArticleServiceImpl implements IArticleService {
         existing.setDesignation(dto.getDesignation());
         existing.setFamily(dto.getFamily());
         existing.setType(dto.getType());
-        existing.setPrixUnitaireHT(dto.getPrixUnitaireHT());
 
         return articleMapper.toDto(articleRepository.save(existing));
     }

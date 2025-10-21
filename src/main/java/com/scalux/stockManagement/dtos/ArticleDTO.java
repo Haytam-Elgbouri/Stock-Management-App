@@ -1,9 +1,11 @@
 package com.scalux.stockManagement.dtos;
 
+import com.scalux.stockManagement.entities.ArticleColorPrice;
 import com.scalux.stockManagement.enums.Family;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 public class ArticleDTO {
@@ -13,7 +15,6 @@ public class ArticleDTO {
     private Family family;
     private String type;
     private Long longueur;
-    private Long prixUnitaireHT;
-    private Long prixTotalHT;
+    private List<ColorPriceDTO> colorPrices;
 }
 

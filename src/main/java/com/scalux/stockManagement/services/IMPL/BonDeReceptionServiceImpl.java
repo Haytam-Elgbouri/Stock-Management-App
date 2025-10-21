@@ -48,7 +48,7 @@ public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
 
             BRLine line = new BRLine();
             line.setArticle(articleMapper.toEntity(bcLineDTO.getArticle()));
-            line.setColor(bcLineDTO.getColor());
+//            line.setColor(bcLineDTO.getColor());
             line.setQuantity(bcLineDTO.getQuantity());
             line.setRemainingBefore(bcLineDTO.getRemaining());
 
@@ -135,13 +135,15 @@ public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
 
         for (BRLine BRLine : bonDeReception.getLines()) {
             if (BRLine.getReceived() != 0) {
-                stockRepository.findByArticleIdAndColor(BRLine.getArticle().getId(), BRLine.getColor())
+                stockRepository.findByArticleIdAndColor(BRLine.getArticle().getId(), "Brut"
+//                                BRLine.getColor()
+                        )
                         .ifPresentOrElse(existingStock -> {
                             existingStock.setQuantity(existingStock.getQuantity() + BRLine.getReceived());
                             stockRepository.save(existingStock);
                         }, () -> {
                             StockDTO stockDTO = new StockDTO();
-                            stockDTO.setColor(BRLine.getColor());
+//                            stockDTO.setColor(BRLine.getColor());
                             stockDTO.setQuantity(BRLine.getReceived());
                             stockDTO.setArticle(BRLine.getArticle());
                             stockRepository.save(stockMapper.toEntity(stockDTO));

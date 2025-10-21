@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 public class BCLineDTO {
     private Long id;
     private ArticleDTO article;
-    private String color;
+//    private String color;
     @NotNull
     private Long quantity;
     @NotNull

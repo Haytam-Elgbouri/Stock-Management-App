@@ -6,32 +6,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
-public class BRLine {
+public class ArticleColorPrice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-//    private String color;
-
-    private Long quantity;
-
-    private Long remainingBefore;
-
-    private Long received;
-
-    private Long remainingAfter;
 
     @ManyToOne
     private Article article;
 
     @ManyToOne
-    private BonDeReception br;
+    private Color color;
 
-    @ManyToOne
-    private BCLine bcLine;
-
-    private Long prixTotalLigne;
+    private Long prixUnitaireHT;
+    private Long prixTotalHT;
 }

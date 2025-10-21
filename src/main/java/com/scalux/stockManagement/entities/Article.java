@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Data
@@ -25,6 +26,8 @@ public class Article {
 
     private String type; // e.g., "meter", "unit"
     private Long longueur;
-    private Long prixUnitaireHT;
-    private Long prixTotalHT;
+
+
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+    private List<ArticleColorPrice> colorPrices;
 }

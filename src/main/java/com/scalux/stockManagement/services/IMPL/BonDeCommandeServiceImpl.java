@@ -3,16 +3,10 @@ package com.scalux.stockManagement.services.IMPL;
 import com.scalux.stockManagement.dtos.BCLineDTO;
 import com.scalux.stockManagement.dtos.BonDeCommandeDTO;
 import com.scalux.stockManagement.dtos.StockDTO;
-import com.scalux.stockManagement.entities.Article;
-import com.scalux.stockManagement.entities.BCLine;
-import com.scalux.stockManagement.entities.BonDeCommande;
-import com.scalux.stockManagement.entities.Stock;
+import com.scalux.stockManagement.entities.*;
 import com.scalux.stockManagement.mappers.BonDeCommandeMapper;
 import com.scalux.stockManagement.mappers.StockMapper;
-import com.scalux.stockManagement.repositories.ArticleRepository;
-import com.scalux.stockManagement.repositories.BCLineRepository;
-import com.scalux.stockManagement.repositories.BonDeCommandeRepository;
-import com.scalux.stockManagement.repositories.StockRepository;
+import com.scalux.stockManagement.repositories.*;
 import com.scalux.stockManagement.services.IBonDeCommandeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,6 +24,7 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
     private final ArticleRepository articleRepository;
     private final BCLineRepository bcLineRepository;
     private final StockRepository stockRepository;
+    private final ArticleColorPriceRepository articleColorPriceRepository;
 
     private final BonDeCommandeMapper bcMapper;
     private final StockMapper stockMapper;
@@ -38,21 +33,18 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
     public BonDeCommandeDTO addBC(BonDeCommandeDTO dto) {
         BonDeCommande bc = new BonDeCommande();
         bc.setReference(dto.getReference());
-        LocalDate localDate = LocalDate.now();
-        bc.setDate(localDate);
-//        bc.setValidated(dto.isValidated());
+        bc.setDate(LocalDate.now());
         bc.setSupplierReference(dto.getSupplierReference());
 
         List<BCLine> lines = new ArrayList<>();
         Long prixTotal = 0L;
 
         for (BCLineDTO lineDTO : dto.getLines()) {
-            Long articleId = lineDTO.getArticle() != null ? lineDTO.getArticle().getId() : null;
-            if (articleId == null) {
+            if (lineDTO.getArticle() == null || lineDTO.getArticle().getId() == null) {
                 throw new RuntimeException("Article ID is required");
             }
 
-            Article article = articleRepository.findById(articleId)
+            Article article = articleRepository.findById(lineDTO.getArticle().getId())
                     .orElseThrow(() -> new RuntimeException("Article not found"));
 
             BCLine line = new BCLine();
@@ -60,35 +52,32 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
             line.setQuantity(lineDTO.getQuantity());
             line.setRemaining(lineDTO.getQuantity());
             line.setReceived(0L);
-//            line.setColor(lineDTO.getColor());
             line.setBc(bc);
 
-            Long lineTotal = line.getQuantity();
-            line.setPrixTotalLigne(lineTotal);
+            // ✅ Set color
+            if (lineDTO.getColor().getId() != null) {
+                ArticleColorPrice colorPrice = articleColorPriceRepository
+                        .findByArticleIdAndColorId(article.getId(), lineDTO.getColor().getId())
+                        .orElseThrow(() -> new RuntimeException("Color price not found"));
+
+                line.setColor(colorPrice.getColor());
+
+                // ✅ Calculate line total
+                Long lineTotal = colorPrice.getPrixTotalHT() * line.getQuantity();
+                line.setPrixTotalLigne(lineTotal);
+
+                prixTotal += lineTotal;
+            } else {
+                throw new RuntimeException("Color is required for each BC line");
+            }
 
             lines.add(line);
-            prixTotal = prixTotal + lineTotal;
         }
 
         bc.setLines(lines);
         bc.setPrixTotalHT(prixTotal);
 
         BonDeCommande saved = bcRepository.save(bc);
-
-        // Update or create stock
-//        for (BCLine line : saved.getLignes()) {
-//            stockRepository.findByArticleIdAndColor(line.getArticle().getId(), line.getColor())
-//                    .ifPresentOrElse(existingStock -> {
-//                        existingStock.setQuantity(existingStock.getQuantity() + line.getQuantity());
-//                        stockRepository.save(existingStock);
-//                    }, () -> {
-//                        Stock stock = new Stock();
-//                        stock.setArticle(line.getArticle());
-//                        stock.setColor(line.getColor());
-//                        stock.setQuantity(line.getQuantity());
-//                        stockRepository.save(stock);
-//                    });
-//        }
 
         return bcMapper.toDto(saved);
     }

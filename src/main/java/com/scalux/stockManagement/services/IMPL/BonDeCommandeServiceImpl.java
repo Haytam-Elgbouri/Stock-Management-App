@@ -4,6 +4,7 @@ import com.scalux.stockManagement.dtos.BCLineDTO;
 import com.scalux.stockManagement.dtos.BonDeCommandeDTO;
 import com.scalux.stockManagement.dtos.StockDTO;
 import com.scalux.stockManagement.entities.*;
+import com.scalux.stockManagement.mappers.ArticleMapper;
 import com.scalux.stockManagement.mappers.BonDeCommandeMapper;
 import com.scalux.stockManagement.mappers.StockMapper;
 import com.scalux.stockManagement.repositories.*;
@@ -28,6 +29,7 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
 
     private final BonDeCommandeMapper bcMapper;
     private final StockMapper stockMapper;
+    private final ArticleMapper articleMapper;
 
     @Override
     public BonDeCommandeDTO addBC(BonDeCommandeDTO dto) {
@@ -138,7 +140,7 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
 //        if (saved.isValidated()) {
             for (BCLine line : saved.getLines()) {
                 StockDTO stockDTO = new StockDTO();
-                stockDTO.setArticle(line.getArticle());
+                stockDTO.setArticle(articleMapper.toDto(line.getArticle()));
 //                stockDTO.setColor(line.getColor());
                 stockDTO.setQuantity(line.getQuantity());
 

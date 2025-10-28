@@ -2,10 +2,7 @@ package com.scalux.stockManagement.services.IMPL;
 
 import com.scalux.stockManagement.dtos.*;
 import com.scalux.stockManagement.entities.*;
-import com.scalux.stockManagement.mappers.ArticleMapper;
-import com.scalux.stockManagement.mappers.BonDeCommandeMapper;
-import com.scalux.stockManagement.mappers.BonDeReceptionMapper;
-import com.scalux.stockManagement.mappers.StockMapper;
+import com.scalux.stockManagement.mappers.*;
 import com.scalux.stockManagement.repositories.*;
 import com.scalux.stockManagement.services.IBonDeReceptionService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +26,7 @@ public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
     private final ArticleMapper articleMapper;
     private final StockRepository stockRepository;
     private final StockMapper stockMapper;
+    private final ColorMapper colorMapper;
 
     @Override
     public BonDeReceptionDTO addBR(CreateBRDTO createBRDTO, Long id) {
@@ -48,7 +46,7 @@ public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
 
             BRLine line = new BRLine();
             line.setArticle(articleMapper.toEntity(bcLineDTO.getArticle()));
-//            line.setColor(bcLineDTO.getColor());
+            line.setColor(colorMapper.toEntity(bcLineDTO.getColor()));
             line.setQuantity(bcLineDTO.getQuantity());
             line.setRemainingBefore(bcLineDTO.getRemaining());
 
@@ -102,7 +100,6 @@ public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
     @Override
     public void receiveBR(BRRecieveDTO brRecieveDTO) {
 
-        // Fetch the BR
         BonDeReception br = brRepository.findById(brRecieveDTO.getBrId())
                 .orElseThrow(() -> new RuntimeException("BR not found"));
 
@@ -110,7 +107,6 @@ public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
             throw new RuntimeException("BR Already validated");
         }
 
-        // Deliver each line
         for (BRLineReceiveDTO lineDTO : brRecieveDTO.getLines()) {
             BRLine line = brLineRepository.findById(lineDTO.getId())
                     .orElseThrow(() -> new RuntimeException("BRLine not found: " + lineDTO.getId()));
@@ -135,17 +131,16 @@ public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
 
         for (BRLine BRLine : bonDeReception.getLines()) {
             if (BRLine.getReceived() != 0) {
-                stockRepository.findByArticleIdAndColor(BRLine.getArticle().getId(), "Brut"
-//                                BRLine.getColor()
+                stockRepository.findByArticleIdAndColorId(BRLine.getArticle().getId(),BRLine.getColor().getId()
                         )
                         .ifPresentOrElse(existingStock -> {
                             existingStock.setQuantity(existingStock.getQuantity() + BRLine.getReceived());
                             stockRepository.save(existingStock);
                         }, () -> {
                             StockDTO stockDTO = new StockDTO();
-//                            stockDTO.setColor(BRLine.getColor());
+                            stockDTO.setColor(colorMapper.toDto(BRLine.getColor()));
                             stockDTO.setQuantity(BRLine.getReceived());
-                            stockDTO.setArticle(BRLine.getArticle());
+                            stockDTO.setArticle(articleMapper.toDto(BRLine.getArticle()));
                             stockRepository.save(stockMapper.toEntity(stockDTO));
                         });
                 BCLine bcLine = BRLine.getBcLine();

@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class StockDTO {
     private Long id;
-    private Article article;
-    private String color;
+    private ArticleDTO article;
+    private ColorDTO color;
     private Long quantity;
 }

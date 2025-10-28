@@ -14,7 +14,8 @@ public class BRLine {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    private String color;
+    @ManyToOne
+    private Color color;
 
     private Long quantity;
 

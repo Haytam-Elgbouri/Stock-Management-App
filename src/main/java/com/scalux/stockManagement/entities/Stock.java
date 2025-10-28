@@ -20,7 +20,8 @@ public class Stock {
     @ManyToOne(fetch = FetchType.EAGER)
     private Article article;
 
-    private String color;
+    @ManyToOne
+    private Color color;
 
 
     private Long quantity;

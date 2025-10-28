@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class BRLineDTO {
     private Long id;
-//    private String color;
+    private ColorDTO color;
     private Long quantity;
     private Long remainingBefore;
     private Long received;

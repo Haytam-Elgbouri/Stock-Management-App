@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BCLine {
+public class BCClientLine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,18 +20,17 @@ public class BCLine {
     @NotNull
     private Long quantity;
 
-    private Long prixArticleHT;
+    @NotNull
+    private Long delivered;
 
     @NotNull
     private Long remaining;
-    @NotNull
-    private Long received;
 
     @ManyToOne
     private Article article;
 
     @ManyToOne
-    private BonDeCommande bc;
+    private BonDeCommandeClient bcClient;
 
     private Long prixTotalLigne;
 }

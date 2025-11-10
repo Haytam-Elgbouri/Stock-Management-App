@@ -83,21 +83,6 @@ public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
                 .orElseThrow(() -> new RuntimeException("BR not found")));
     }
 
-
-//    @Override
-//    public void deliver(RecieveDTO recieveDTO) {
-//
-//        BRLine BRLine = brLineRepository.findById(recieveDTO.getId()).orElse(null);
-//        if (BRLine.getBr().getIsValidated() == false){
-//            BRLine.setReceived(recieveDTO.getReceivedQuantity() + BRLine.getReceived());
-//            BRLine.setRemainingAfter(BRLine.getRemainingBefore() - recieveDTO.getReceivedQuantity());
-//            brLineRepository.save(BRLine);
-//        }else {
-//            throw new RuntimeException("BR Already validated");
-//        }
-//
-//    }
-
     @Override
     public void receiveBR(BRRecieveDTO brRecieveDTO) {
 
@@ -135,14 +120,21 @@ public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
                 stockRepository.findByArticleIdAndColorId(BRLine.getArticle().getId(),BRLine.getColor().getId()
                         )
                         .ifPresentOrElse(existingStock -> {
-                            existingStock.setQuantity(existingStock.getQuantity() + BRLine.getReceived());
+                            Long existingPrixLineStock = existingStock.getPrixLineStock();
+                            Long existingQuantity = existingStock.getQuantity();
+                            Long receivedQuantity = BRLine.getReceived();
+                            existingStock.setQuantity(existingQuantity + receivedQuantity);
+                            existingStock.setPrixLineStock(existingPrixLineStock + (receivedQuantity * BRLine.getPrixArticleHT()));
                             stockRepository.save(existingStock);
                         }, () -> {
                             StockDTO stockDTO = new StockDTO();
                             stockDTO.setColor(colorMapper.toDto(BRLine.getColor()));
-                            stockDTO.setPrixArticleHT(BRLine.getPrixArticleHT());
-                            stockDTO.setQuantity(BRLine.getReceived());
+                            Long articlePrice = BRLine.getPrixArticleHT();
+                            stockDTO.setPrixArticleHT(articlePrice);
+                            Long quantity = BRLine.getReceived();
+                            stockDTO.setQuantity(quantity);
                             stockDTO.setArticle(articleMapper.toDto(BRLine.getArticle()));
+                            stockDTO.setPrixLineStock(quantity * articlePrice);
                             stockRepository.save(stockMapper.toEntity(stockDTO));
                         });
                 BCLine bcLine = BRLine.getBcLine();

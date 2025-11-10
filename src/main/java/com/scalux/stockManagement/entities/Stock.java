@@ -25,6 +25,7 @@ public class Stock {
     @ManyToOne
     private Color color;
 
-
     private Long quantity;
+
+    private Long prixLineStock;
 }

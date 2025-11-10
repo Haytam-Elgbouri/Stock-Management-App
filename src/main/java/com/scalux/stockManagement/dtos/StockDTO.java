@@ -10,4 +10,5 @@ public class StockDTO {
     private Long prixArticleHT;
     private ColorDTO color;
     private Long quantity;
+    private Long prixLineStock;
 }

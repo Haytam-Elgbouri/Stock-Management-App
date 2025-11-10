@@ -19,6 +19,9 @@ public class BCLine {
     private Color color;
     @NotNull
     private Long quantity;
+
+    private Long prixArticleHT;
+
     @NotNull
     private Long remaining;
     @NotNull

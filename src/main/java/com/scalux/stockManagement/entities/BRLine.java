@@ -28,6 +28,8 @@ public class BRLine {
     @ManyToOne
     private Article article;
 
+    private Long prixArticleHT;
+
     @ManyToOne
     private BonDeReception br;
 

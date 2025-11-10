@@ -49,6 +49,7 @@ public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
             line.setColor(colorMapper.toEntity(bcLineDTO.getColor()));
             line.setQuantity(bcLineDTO.getQuantity());
             line.setRemainingBefore(bcLineDTO.getRemaining());
+            line.setPrixArticleHT(bcLineDTO.getPrixArticleHT());
 
             line.setReceived(0L);
             BCLine bcLine = bcLineRepository.findById(bcLineDTO.getId()).orElseThrow();
@@ -139,6 +140,7 @@ public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
                         }, () -> {
                             StockDTO stockDTO = new StockDTO();
                             stockDTO.setColor(colorMapper.toDto(BRLine.getColor()));
+                            stockDTO.setPrixArticleHT(BRLine.getPrixArticleHT());
                             stockDTO.setQuantity(BRLine.getReceived());
                             stockDTO.setArticle(articleMapper.toDto(BRLine.getArticle()));
                             stockRepository.save(stockMapper.toEntity(stockDTO));

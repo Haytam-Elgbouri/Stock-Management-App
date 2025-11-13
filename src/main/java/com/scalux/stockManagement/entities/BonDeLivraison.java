@@ -10,9 +10,9 @@ import java.util.List;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class BonDeCommandeClient {
+@NoArgsConstructor
+public class BonDeLivraison {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,14 +21,13 @@ public class BonDeCommandeClient {
 
     private LocalDate date;
 
-    private String client;
+    @OneToMany(mappedBy = "bl", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BLLine> lines;
 
-    @OneToMany(mappedBy = "bcClient", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BCClientLine> lines;
+    @ManyToOne
+    private BonDeCommandeClient bcClient;
 
-    @OneToMany(mappedBy = "bcClient", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BonDeLivraison> bls;
+    private Long PrixTotalHT;
 
-    private Long prixTotalHT;
-
+    private Boolean isValidated;
 }

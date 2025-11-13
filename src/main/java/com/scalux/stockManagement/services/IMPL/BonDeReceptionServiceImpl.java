@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
 
     private final BonDeReceptionMapper brMapper;
-    private final BLLineRepository brLineRepository;
+    private final BRLineRepository brLineRepository;
     private final BonDeReceptionRepository brRepository;
     private final BonDeCommandeRepository bcRepository;
     private final BCLineRepository bcLineRepository;

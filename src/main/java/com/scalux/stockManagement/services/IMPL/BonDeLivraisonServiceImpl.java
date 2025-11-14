@@ -7,6 +7,7 @@ import com.scalux.stockManagement.mappers.BonDeCommandeClientMapper;
 import com.scalux.stockManagement.mappers.BonDeLivraisonMapper;
 import com.scalux.stockManagement.mappers.ColorMapper;
 import com.scalux.stockManagement.repositories.BCClientLineRepository;
+import com.scalux.stockManagement.repositories.BLLineRepository;
 import com.scalux.stockManagement.repositories.BonDeCommandeClientRepository;
 import com.scalux.stockManagement.repositories.BonDeLivraisonRepository;
 import com.scalux.stockManagement.services.IBonDeLivraisonService;
@@ -25,7 +26,7 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
     private final BonDeLivraisonRepository blRepository;
     private final BonDeCommandeClientRepository bccRepository;
     private final BCClientLineRepository bcClientLineRepository;
-//    private final
+    private final BLLineRepository blLineRepository;
     private final BonDeCommandeClientMapper bccMapper;
     private final BonDeLivraisonMapper blMapper;
     private final ArticleMapper articleMapper;
@@ -85,5 +86,31 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
     public BonDeLivraisonDTO getById(Long id) {
         return blMapper.toDto(blRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("BC Client not found")));
+    }
+
+    @Override
+    public void deliverBL(BLDeliverDTO blDeliverDTO) {
+
+        BonDeLivraison bl = blRepository.findById(blDeliverDTO.getBlId())
+                .orElseThrow(() -> new RuntimeException("BR not found"));
+
+        if (Boolean.TRUE.equals(bl.getIsValidated())) {
+            throw new RuntimeException("BR Already validated");
+        }
+
+        for (BLLineDeliverDTO lineDTO : blDeliverDTO.getLines()) {
+            BLLine line = blLineRepository.findById(lineDTO.getId())
+                    .orElseThrow(() -> new RuntimeException("BRLine not found: " + lineDTO.getId()));
+
+            line.setDelivered(lineDTO.getDeliveredQuantity() + line.getDelivered());
+            line.setRemainingAfter(line.getRemainingBefore() - lineDTO.getDeliveredQuantity());
+
+            blLineRepository.save(line);
+        }
+    }
+
+    @Override
+    public void validate(Long id) {
+
     }
 }

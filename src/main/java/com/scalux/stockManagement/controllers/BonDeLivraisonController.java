@@ -1,5 +1,6 @@
 package com.scalux.stockManagement.controllers;
 
+import com.scalux.stockManagement.dtos.BLDeliverDTO;
 import com.scalux.stockManagement.dtos.BonDeLivraisonDTO;
 import com.scalux.stockManagement.dtos.CreateBRDTO;
 import com.scalux.stockManagement.services.IBonDeLivraisonService;
@@ -29,5 +30,10 @@ public class BonDeLivraisonController {
     @GetMapping(path = "/{id}")
     public BonDeLivraisonDTO getById(@PathVariable Long id){
         return bonDeLivraisonService.getById(id);
+    }
+
+    @PostMapping("/deliver")
+    public void deliverBL(@RequestBody BLDeliverDTO blDeliverDTO){
+        bonDeLivraisonService.deliverBL(blDeliverDTO);
     }
 }

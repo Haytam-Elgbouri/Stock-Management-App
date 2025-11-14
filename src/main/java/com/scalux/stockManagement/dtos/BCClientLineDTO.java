@@ -17,6 +17,7 @@ public class BCClientLineDTO {
     private ArticleDTO article;
     private ColorDTO color;
     private Long quantity;
+    private Long prixArticleHT;
     private Long delivered;
     private Long remaining;
     private Long prixTotalLigne;

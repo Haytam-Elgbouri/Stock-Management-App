@@ -20,6 +20,8 @@ public class BCClientLine {
     @NotNull
     private Long quantity;
 
+    private Long prixArticleHT;
+
     @NotNull
     private Long delivered;
 

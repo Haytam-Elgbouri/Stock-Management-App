@@ -2,14 +2,8 @@ package com.scalux.stockManagement.services.IMPL;
 
 import com.scalux.stockManagement.dtos.*;
 import com.scalux.stockManagement.entities.*;
-import com.scalux.stockManagement.mappers.ArticleMapper;
-import com.scalux.stockManagement.mappers.BonDeCommandeClientMapper;
-import com.scalux.stockManagement.mappers.BonDeLivraisonMapper;
-import com.scalux.stockManagement.mappers.ColorMapper;
-import com.scalux.stockManagement.repositories.BCClientLineRepository;
-import com.scalux.stockManagement.repositories.BLLineRepository;
-import com.scalux.stockManagement.repositories.BonDeCommandeClientRepository;
-import com.scalux.stockManagement.repositories.BonDeLivraisonRepository;
+import com.scalux.stockManagement.mappers.*;
+import com.scalux.stockManagement.repositories.*;
 import com.scalux.stockManagement.services.IBonDeLivraisonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +21,8 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
     private final BonDeCommandeClientRepository bccRepository;
     private final BCClientLineRepository bcClientLineRepository;
     private final BLLineRepository blLineRepository;
+    private final StockRepository stockRepository;
+    private final StockMapper stockMapper;
     private final BonDeCommandeClientMapper bccMapper;
     private final BonDeLivraisonMapper blMapper;
     private final ArticleMapper articleMapper;
@@ -54,7 +50,7 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
             line.setColor(colorMapper.toEntity(bcClientLineDTO.getColor()));
             line.setQuantity(bcClientLineDTO.getQuantity());
             line.setRemainingBefore(bcClientLineDTO.getRemaining());
-//            line.setPrixArticleHT(bcClientLineDTO.getPrixArticleHT());
+            line.setPrixArticleHT(bcClientLineDTO.getPrixArticleHT());
 
             line.setDelivered(0L);
             BCClientLine bcClientLine = bcClientLineRepository.findById(bcClientLineDTO.getId()).orElseThrow();
@@ -111,6 +107,36 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
 
     @Override
     public void validate(Long id) {
+        BonDeLivraison bonDeLivraison = blRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Bon de Livraison not found"));
 
+
+        bonDeLivraison.setIsValidated(true);
+        blRepository.save(bonDeLivraison);
+
+        for (BLLine blLine : bonDeLivraison.getLines()) {
+            if (blLine.getDelivered() != 0) {
+                Stock stockLine = stockRepository.findByArticleIdAndColorId(blLine.getArticle().getId(), blLine.getColor().getId()).orElseThrow(null);
+
+                if (stockLine.getQuantity() >= blLine.getDelivered()){
+                    Long existingPrixLineStock = stockLine.getPrixLineStock();
+                    Long existingQuantity = stockLine.getQuantity();
+                    Long deliveredQuantity = blLine.getDelivered();
+                    stockLine.setQuantity(existingQuantity - deliveredQuantity);
+                    stockLine.setPrixLineStock(existingPrixLineStock - (deliveredQuantity * blLine.getPrixArticleHT()));
+                    stockRepository.save(stockLine);
+                }else {
+                    throw new RuntimeException("Stock insuffisent");
+                }
+
+
+                BCClientLine bcClientLine = blLine.getBcClientLine();
+                if (bcClientLine != null) {
+                    bcClientLine.setDelivered(bcClientLine.getDelivered() + blLine.getDelivered());
+                    bcClientLine.setRemaining(bcClientLine.getRemaining() - blLine.getDelivered());
+                    bcClientLineRepository.save(bcClientLine);
+                }
+            }
+        }
     }
 }

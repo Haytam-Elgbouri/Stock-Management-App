@@ -63,6 +63,7 @@ public class BonDeCommandeClientServiceImpl implements IBonDeCommandeClientServi
 
                 Long lineTotal = colorPrice.getPrixTotalHT() * line.getQuantity();
                 line.setPrixTotalLigne(lineTotal);
+                line.setPrixArticleHT(colorPrice.getPrixTotalHT());
 
                 prixTotal += lineTotal;
             } else {

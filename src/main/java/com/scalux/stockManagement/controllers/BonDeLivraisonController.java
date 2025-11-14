@@ -36,4 +36,9 @@ public class BonDeLivraisonController {
     public void deliverBL(@RequestBody BLDeliverDTO blDeliverDTO){
         bonDeLivraisonService.deliverBL(blDeliverDTO);
     }
+
+    @PostMapping("/validate/{id}")
+    public void validate(@PathVariable Long id){
+        bonDeLivraisonService.validate(id);
+    }
 }

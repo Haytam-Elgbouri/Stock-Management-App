@@ -124,7 +124,12 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
                     Long deliveredQuantity = blLine.getDelivered();
                     stockLine.setQuantity(existingQuantity - deliveredQuantity);
                     stockLine.setPrixLineStock(existingPrixLineStock - (deliveredQuantity * blLine.getPrixArticleHT()));
-                    stockRepository.save(stockLine);
+                    if (stockLine.getQuantity()==0){
+                        stockRepository.delete(stockLine);
+                    }else {
+                        stockRepository.save(stockLine);
+                    }
+
                 }else {
                     throw new RuntimeException("Stock insuffisent");
                 }

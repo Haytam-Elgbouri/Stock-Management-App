@@ -14,4 +14,5 @@ public interface IBonDeLivraisonService {
     void deliverBL(BLDeliverDTO blDeliverDTO);
 
     void validate(Long id);
+    void delete(Long id);
 }

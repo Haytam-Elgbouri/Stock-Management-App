@@ -34,38 +34,34 @@ public class ArticleServiceImpl implements IArticleService {
         Article article = articleMapper.toEntity(dto);
         Family family = article.getFamily();
 
-        // Initialize colorPrices
         article.setColorPrices(new ArrayList<>());
 
-        // Save article
         Article savedArticle = articleRepository.save(article);
 
-        if (dto.getColorPrices() != null) {
-            for (ColorPriceDTO colorPriceDTO : dto.getColorPrices()) {
-                ArticleColorPrice articleColorPrice = new ArticleColorPrice();
-                articleColorPrice.setArticle(savedArticle);
-
-                Color color = colorRepository.findById(colorPriceDTO.getColorId())
-                        .orElseThrow(() -> new RuntimeException("Color not found"));
-                articleColorPrice.setColor(color);
-
-                Long prixUnitaire = colorPriceDTO.getPrixUnitaireHT();
-                Long prixTotal = (family == Family.BARRE && article.getLongueur() != null)
-                        ? prixUnitaire * article.getLongueur()
-                        : colorPriceDTO.getPrixTotalHT();
-
-                articleColorPrice.setPrixUnitaireHT(prixUnitaire);
-                articleColorPrice.setPrixTotalHT(prixTotal);
-
-                // Save color price
-                ArticleColorPrice savedColorPrice = articleColorPriceRepository.save(articleColorPrice);
-
-                // Add to savedArticle
-                savedArticle.getColorPrices().add(savedColorPrice);
-            }
+        if (dto.getColorPrices() == null || dto.getColorPrices().isEmpty()) {
+            throw new RuntimeException("This article must contain at least 1 color");
         }
 
-        // ✅ Map only savedArticle -> DTO
+        for (ColorPriceDTO colorPriceDTO : dto.getColorPrices()) {
+            ArticleColorPrice articleColorPrice = new ArticleColorPrice();
+            articleColorPrice.setArticle(savedArticle);
+
+            Color color = colorRepository.findById(colorPriceDTO.getColorId())
+                    .orElseThrow(() -> new RuntimeException("Color not found"));
+            articleColorPrice.setColor(color);
+
+            Long prixUnitaire = colorPriceDTO.getPrixUnitaireHT();
+            Long prixTotal = (family == Family.BARRE && article.getLongueur() != null)
+                    ? prixUnitaire * article.getLongueur()
+                    : colorPriceDTO.getPrixTotalHT();
+
+            articleColorPrice.setPrixUnitaireHT(prixUnitaire);
+            articleColorPrice.setPrixTotalHT(prixTotal);
+
+            ArticleColorPrice savedColorPrice = articleColorPriceRepository.save(articleColorPrice);
+            savedArticle.getColorPrices().add(savedColorPrice);
+        }
+
         return articleMapper.toDto(savedArticle);
     }
 

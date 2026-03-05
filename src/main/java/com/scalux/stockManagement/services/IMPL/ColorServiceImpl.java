@@ -5,6 +5,7 @@ import com.scalux.stockManagement.entities.Color;
 import com.scalux.stockManagement.mappers.ColorMapper;
 import com.scalux.stockManagement.repositories.ColorRepository;
 import com.scalux.stockManagement.services.IColorService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-
+@Transactional
 public class ColorServiceImpl implements IColorService {
 
     private final ColorMapper colorMapper;

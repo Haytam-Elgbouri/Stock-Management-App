@@ -12,6 +12,7 @@ import com.scalux.stockManagement.repositories.ArticleColorPriceRepository;
 import com.scalux.stockManagement.repositories.ArticleRepository;
 import com.scalux.stockManagement.repositories.ColorRepository;
 import com.scalux.stockManagement.services.IArticleService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ArticleServiceImpl implements IArticleService {
 
     private final ArticleRepository articleRepository;

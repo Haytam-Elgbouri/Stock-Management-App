@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
 
     private final BonDeLivraisonRepository blRepository;
@@ -109,7 +110,6 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
 
             Long deliveredQty = lineDTO.getDeliveredQuantity();
 
-            // Check that we're not delivering more than remaining
             if (deliveredQty > line.getRemainingBefore()) {
                 throw new RuntimeException(
                         "Delivered quantity exceeds remaining for BLLine: " + line.getId()
@@ -125,7 +125,6 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
             }
 
 
-            // Apply changes
             line.setDelivered(line.getDelivered() + deliveredQty);
             line.setRemainingAfter(line.getRemainingBefore() - deliveredQty);
 
@@ -133,46 +132,6 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
         }
     }
 
-
-//    @Override
-//    public void validate(Long id) {
-//        BonDeLivraison bonDeLivraison = blRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("Bon de Livraison not found"));
-//
-//
-//        bonDeLivraison.setIsValidated(true);
-//        blRepository.save(bonDeLivraison);
-//
-//        for (BLLine blLine : bonDeLivraison.getLines()) {
-//            if (blLine.getDelivered() != 0) {
-//                Stock stockLine = stockRepository.findByArticleIdAndColorId(blLine.getArticle().getId(), blLine.getColor().getId()).orElseThrow(() -> new RuntimeException("This article with this color doesnt exist in the stock"));
-//
-//                if (stockLine.getQuantity() >= blLine.getDelivered()){
-//                    Long existingPrixLineStock = stockLine.getPrixLineStock();
-//                    Long existingQuantity = stockLine.getQuantity();
-//                    Long deliveredQuantity = blLine.getDelivered();
-//                    stockLine.setQuantity(existingQuantity - deliveredQuantity);
-//                    stockLine.setPrixLineStock(existingPrixLineStock - (deliveredQuantity * blLine.getPrixArticleHT()));
-//                    if (stockLine.getQuantity()==0){
-//                        stockRepository.delete(stockLine);
-//                    }else {
-//                        stockRepository.save(stockLine);
-//                    }
-//
-//                }else {
-//                    throw new RuntimeException("Stock insuffisent");
-//                }
-//
-//
-//                BCClientLine bcClientLine = blLine.getBcClientLine();
-//                if (bcClientLine != null) {
-//                    bcClientLine.setDelivered(bcClientLine.getDelivered() + blLine.getDelivered());
-//                    bcClientLine.setRemaining(bcClientLine.getRemaining() - blLine.getDelivered());
-//                    bcClientLineRepository.save(bcClientLine);
-//                }
-//            }
-//        }
-//    }
 
     private void updateStockForLine(BLLine blLine) {
 

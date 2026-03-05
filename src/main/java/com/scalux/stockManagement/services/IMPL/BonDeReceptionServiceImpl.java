@@ -5,6 +5,7 @@ import com.scalux.stockManagement.entities.*;
 import com.scalux.stockManagement.mappers.*;
 import com.scalux.stockManagement.repositories.*;
 import com.scalux.stockManagement.services.IBonDeReceptionService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
 
     private final BonDeReceptionMapper brMapper;

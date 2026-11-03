@@ -12,6 +12,7 @@ import com.scalux.stockManagement.repositories.ArticleColorPriceRepository;
 import com.scalux.stockManagement.repositories.ArticleRepository;
 import com.scalux.stockManagement.repositories.ColorRepository;
 import com.scalux.stockManagement.services.IArticleService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ArticleServiceImpl implements IArticleService {
 
     private final ArticleRepository articleRepository;
@@ -34,20 +36,21 @@ public class ArticleServiceImpl implements IArticleService {
         Article article = articleMapper.toEntity(dto);
         Family family = article.getFamily();
 
-        // Initialize colorPrices
         article.setColorPrices(new ArrayList<>());
 
-        // Save article
         Article savedArticle = articleRepository.save(article);
 
-        if (dto.getColorPrices() != null) {
-            for (ColorPriceDTO colorPriceDTO : dto.getColorPrices()) {
-                ArticleColorPrice articleColorPrice = new ArticleColorPrice();
-                articleColorPrice.setArticle(savedArticle);
+        if (dto.getColorPrices() == null || dto.getColorPrices().isEmpty()) {
+            throw new RuntimeException("This article must contain at least 1 color");
+        }
 
-                Color color = colorRepository.findById(colorPriceDTO.getColorId())
-                        .orElseThrow(() -> new RuntimeException("Color not found"));
-                articleColorPrice.setColor(color);
+        for (ColorPriceDTO colorPriceDTO : dto.getColorPrices()) {
+            ArticleColorPrice articleColorPrice = new ArticleColorPrice();
+            articleColorPrice.setArticle(savedArticle);
+
+            Color color = colorRepository.findById(colorPriceDTO.getColorId())
+                    .orElseThrow(() -> new RuntimeException("Color not found"));
+            articleColorPrice.setColor(color);
 
                 Long prixUnitaire = colorPriceDTO.getPrixUnitaireHT();
 //                Long prixTotal = (family == Family.BARRE && article.getLongueur() != null)
@@ -61,18 +64,13 @@ public class ArticleServiceImpl implements IArticleService {
                     prixTotal = prixUnitaire;
                 }
 
-                articleColorPrice.setPrixUnitaireHT(prixUnitaire);
-                articleColorPrice.setPrixTotalHT(prixTotal);
+            articleColorPrice.setPrixUnitaireHT(prixUnitaire);
+            articleColorPrice.setPrixTotalHT(prixTotal);
 
-                // Save color price
-                ArticleColorPrice savedColorPrice = articleColorPriceRepository.save(articleColorPrice);
-
-                // Add to savedArticle
-                savedArticle.getColorPrices().add(savedColorPrice);
-            }
+            ArticleColorPrice savedColorPrice = articleColorPriceRepository.save(articleColorPrice);
+            savedArticle.getColorPrices().add(savedColorPrice);
         }
 
-        // ✅ Map only savedArticle -> DTO
         return articleMapper.toDto(savedArticle);
     }
 

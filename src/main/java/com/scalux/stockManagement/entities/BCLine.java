@@ -33,5 +33,5 @@ public class BCLine {
     @ManyToOne
     private BonDeCommande bc;
 
-    private Long prixTotalLigne; // calculated = article.prixUnitaireHT * quantity
+    private Long prixTotalLigne;
 }

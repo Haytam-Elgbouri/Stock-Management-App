@@ -7,6 +7,7 @@ import com.scalux.stockManagement.entities.Stock;
 import com.scalux.stockManagement.mappers.StockMapper;
 import com.scalux.stockManagement.repositories.StockRepository;
 import com.scalux.stockManagement.services.IStockService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-
+@Transactional
 public class StockServiceImpl implements IStockService {
     private final StockRepository stockRepository;
     private final StockMapper stockMapper;

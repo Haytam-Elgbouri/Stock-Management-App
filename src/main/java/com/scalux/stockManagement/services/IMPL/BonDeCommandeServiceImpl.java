@@ -9,6 +9,7 @@ import com.scalux.stockManagement.mappers.BonDeCommandeMapper;
 import com.scalux.stockManagement.mappers.StockMapper;
 import com.scalux.stockManagement.repositories.*;
 import com.scalux.stockManagement.services.IBonDeCommandeService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
 
     private final BonDeCommandeRepository bcRepository;
@@ -40,6 +42,10 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
 
         List<BCLine> lines = new ArrayList<>();
         Long prixTotal = 0L;
+
+        if( dto.getLines() == null || dto.getLines().isEmpty()){
+            throw new RuntimeException("This BC should contain at least 1 Article");
+        }
 
         for (BCLineDTO lineDTO : dto.getLines()) {
             if (lineDTO.getArticle() == null || lineDTO.getArticle().getId() == null) {

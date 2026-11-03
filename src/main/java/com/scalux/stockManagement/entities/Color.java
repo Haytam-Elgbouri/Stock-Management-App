@@ -12,6 +12,10 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class Color {
+    public Color(String name) {
+        this.name = name;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

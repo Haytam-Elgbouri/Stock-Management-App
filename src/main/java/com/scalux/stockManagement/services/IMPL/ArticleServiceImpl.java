@@ -50,9 +50,16 @@ public class ArticleServiceImpl implements IArticleService {
                 articleColorPrice.setColor(color);
 
                 Long prixUnitaire = colorPriceDTO.getPrixUnitaireHT();
-                Long prixTotal = (family == Family.BARRE && article.getLongueur() != null)
-                        ? prixUnitaire * article.getLongueur()
-                        : colorPriceDTO.getPrixTotalHT();
+//                Long prixTotal = (family == Family.BARRE && article.getLongueur() != null)
+//                        ? prixUnitaire * article.getLongueur()
+//                        : colorPriceDTO.getPrixTotalHT();
+
+                Long prixTotal = 0L;
+                if (family == Family.BARRE && article.getLongueur() != null) {
+                    prixTotal = prixUnitaire * article.getLongueur();
+                } else if (family == Family.ACCESSORY || family == Family.JOINT) {
+                    prixTotal = prixUnitaire;
+                }
 
                 articleColorPrice.setPrixUnitaireHT(prixUnitaire);
                 articleColorPrice.setPrixTotalHT(prixTotal);

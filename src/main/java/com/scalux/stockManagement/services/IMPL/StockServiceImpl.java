@@ -2,6 +2,7 @@ package com.scalux.stockManagement.services.IMPL;
 
 import com.scalux.stockManagement.dtos.ArticleDTO;
 import com.scalux.stockManagement.dtos.StockDTO;
+import com.scalux.stockManagement.dtos.StockTotalDTO;
 import com.scalux.stockManagement.entities.Article;
 import com.scalux.stockManagement.entities.Stock;
 import com.scalux.stockManagement.mappers.StockMapper;
@@ -34,4 +35,21 @@ public class StockServiceImpl implements IStockService {
                 .map(stockMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public StockTotalDTO getTotalStock() {
+        StockTotalDTO stockTotalDTO = new StockTotalDTO();
+        List<StockDTO> stockLines = stockRepository.findAll().stream()
+                .map(stockMapper::toDto)
+                .toList();
+        long valeurStock = 0L;
+        for (StockDTO stockDTO : stockLines) {
+            valeurStock += stockDTO.getPrixLineStock();
+        }
+        stockTotalDTO.setStockLines(stockLines);
+        stockTotalDTO.setValuerStock(valeurStock);
+        return stockTotalDTO;
+    }
+
+
 }

@@ -2,6 +2,7 @@ package com.scalux.stockManagement.controllers;
 
 import com.scalux.stockManagement.dtos.ArticleDTO;
 import com.scalux.stockManagement.dtos.StockDTO;
+import com.scalux.stockManagement.dtos.StockTotalDTO;
 import com.scalux.stockManagement.services.IStockService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,4 +28,8 @@ public class StockController {
         return ResponseEntity.ok(stockService.getAll());
     }
 
+    @GetMapping("/total")
+    public ResponseEntity<StockTotalDTO> getTotalStock(){
+        return ResponseEntity.ok(stockService.getTotalStock());
+    }
 }

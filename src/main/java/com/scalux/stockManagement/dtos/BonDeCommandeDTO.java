@@ -11,7 +11,7 @@ public class BonDeCommandeDTO {
     private Long id;
     private String reference;
     private LocalDate date;
-    private Long supplierId;
+    private Partner supplierReference;
     private List<BCLineDTO> lines;
     private List<BonDeReceptionDTO> brs;
     private Long prixTotalHT;

@@ -39,8 +39,7 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
         BonDeCommande bc = new BonDeCommande();
         bc.setReference(dto.getReference());
         bc.setDate(LocalDate.now());
-        bc.setSupplierReference(partnerRepository.findById(dto.getSupplierId())
-                .orElseThrow(() -> new RuntimeException("partner not found")));
+        bc.setSupplierReference(dto.getSupplierReference());
 
         List<BCLine> lines = new ArrayList<>();
         Long prixTotal = 0L;

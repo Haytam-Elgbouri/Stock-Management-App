@@ -10,7 +10,7 @@ public class BonDeCommandeClientDTO {
     private Long id;
     private String reference;
     private LocalDate date;
-    private Long clientId;
+    private Partner client;
     private List<BCClientLineDTO> lines;
     private List<BonDeLivraisonDTO> bls;
     private Long prixTotalHT;

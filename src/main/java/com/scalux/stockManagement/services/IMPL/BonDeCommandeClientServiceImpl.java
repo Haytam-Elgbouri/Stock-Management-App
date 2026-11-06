@@ -34,8 +34,7 @@ public class BonDeCommandeClientServiceImpl implements IBonDeCommandeClientServi
         BonDeCommandeClient bcc = new BonDeCommandeClient();
         bcc.setReference(dto.getReference());
         bcc.setDate(LocalDate.now());
-        bcc.setClient(partnerRepository.findById(dto.getClientId())
-                .orElseThrow(() -> new RuntimeException("partner not found")));
+        bcc.setClient(dto.getClient());
 
         List<BCClientLine> lines = new ArrayList<>();
         Long prixTotal = 0L;

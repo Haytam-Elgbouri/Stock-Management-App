@@ -22,7 +22,7 @@ public class PartnerController {
     }
 
     @GetMapping
-    Optional<List<Partner>> getAllPartners(@RequestParam PartnerType type) {
+    List<Partner> getAllPartners(@RequestParam PartnerType type) {
         return partnerService.getAllPartners(type);
     }
 

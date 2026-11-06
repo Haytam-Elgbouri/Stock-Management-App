@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +26,7 @@ public class PartnerServiceImpl implements IPartnerService {
 //    }
 
     @Override
-    public Optional<List<Partner>> getAllPartners(PartnerType partnerType) {
+    public List<Partner> getAllPartners(PartnerType partnerType) {
         return partnerRepository.findByPartnerType(partnerType);
     }
 

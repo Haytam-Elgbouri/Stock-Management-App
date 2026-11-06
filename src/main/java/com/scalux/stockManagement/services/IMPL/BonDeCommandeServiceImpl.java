@@ -32,13 +32,15 @@ public class BonDeCommandeServiceImpl implements IBonDeCommandeService {
     private final BonDeCommandeMapper bcMapper;
     private final StockMapper stockMapper;
     private final ArticleMapper articleMapper;
+    private final PartnerRepository partnerRepository;
 
     @Override
     public BonDeCommandeDTO addBC(BonDeCommandeDTO dto) {
         BonDeCommande bc = new BonDeCommande();
         bc.setReference(dto.getReference());
         bc.setDate(LocalDate.now());
-        bc.setSupplierReference(dto.getSupplierReference());
+        bc.setSupplierReference(partnerRepository.findById(dto.getSupplierId())
+                .orElseThrow(() -> new RuntimeException("partner not found")));
 
         List<BCLine> lines = new ArrayList<>();
         Long prixTotal = 0L;

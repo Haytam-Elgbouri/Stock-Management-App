@@ -21,7 +21,8 @@ public class BonDeCommandeClient {
 
     private LocalDate date;
 
-    private String client;
+    @ManyToOne
+    private Partner client;
 
     @OneToMany(mappedBy = "bcClient", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BCClientLine> lines;

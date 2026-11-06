@@ -6,10 +6,7 @@ import com.scalux.stockManagement.dtos.BonDeCommandeClientDTO;
 import com.scalux.stockManagement.entities.*;
 import com.scalux.stockManagement.mappers.BCClientLineMapper;
 import com.scalux.stockManagement.mappers.BonDeCommandeClientMapper;
-import com.scalux.stockManagement.repositories.ArticleColorPriceRepository;
-import com.scalux.stockManagement.repositories.ArticleRepository;
-import com.scalux.stockManagement.repositories.BCClientLineRepository;
-import com.scalux.stockManagement.repositories.BonDeCommandeClientRepository;
+import com.scalux.stockManagement.repositories.*;
 import com.scalux.stockManagement.services.IBonDeCommandeClientService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -30,13 +27,15 @@ public class BonDeCommandeClientServiceImpl implements IBonDeCommandeClientServi
     private final BCClientLineMapper bcClientLineMapper;
     private final ArticleRepository articleRepository;
     private final ArticleColorPriceRepository articleColorPriceRepository;
+    private final PartnerRepository partnerRepository;
 
     @Override
     public BonDeCommandeClientDTO addBcc(BonDeCommandeClientDTO dto) {
         BonDeCommandeClient bcc = new BonDeCommandeClient();
         bcc.setReference(dto.getReference());
         bcc.setDate(LocalDate.now());
-        bcc.setClient(dto.getClient());
+        bcc.setClient(partnerRepository.findById(dto.getClientId())
+                .orElseThrow(() -> new RuntimeException("partner not found")));
 
         List<BCClientLine> lines = new ArrayList<>();
         Long prixTotal = 0L;

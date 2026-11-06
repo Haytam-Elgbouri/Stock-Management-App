@@ -1,6 +1,7 @@
 package com.scalux.stockManagement.entities;
 
 import jakarta.persistence.*;
+import jakarta.servlet.http.Part;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,9 @@ public class BonDeCommande {
     private String reference;
 
     private LocalDate date;
-    private String supplierReference;
+
+    @ManyToOne
+    private Partner supplierReference;
 
     @OneToMany(mappedBy = "bc", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BCLine> lines;

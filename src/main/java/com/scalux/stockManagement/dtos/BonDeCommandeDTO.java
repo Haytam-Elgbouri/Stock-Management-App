@@ -1,5 +1,6 @@
 package com.scalux.stockManagement.dtos;
 
+import com.scalux.stockManagement.entities.Partner;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -10,7 +11,7 @@ public class BonDeCommandeDTO {
     private Long id;
     private String reference;
     private LocalDate date;
-    private String supplierReference;
+    private Long supplierId;
     private List<BCLineDTO> lines;
     private List<BonDeReceptionDTO> brs;
     private Long prixTotalHT;

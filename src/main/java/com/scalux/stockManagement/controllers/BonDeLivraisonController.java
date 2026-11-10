@@ -15,30 +15,36 @@ import java.util.List;
 @RequestMapping("/api/bls")
 @RequiredArgsConstructor
 public class BonDeLivraisonController {
-    private final IBonDeLivraisonService bonDeLivraisonService;
+    private final IBonDeLivraisonService blService;
 
     @PostMapping(path = "/{id}")
     public ResponseEntity<BonDeLivraisonDTO> addBl(@RequestBody CreateBRDTO createBRDTO, @PathVariable Long id){
-        return ResponseEntity.ok(bonDeLivraisonService.addBl(createBRDTO, id));
+        return ResponseEntity.ok(blService.addBl(createBRDTO, id));
     }
 
     @GetMapping
     public List<BonDeLivraisonDTO> getAll(){
-        return bonDeLivraisonService.getAll();
+        return blService.getAll();
     }
 
     @GetMapping(path = "/{id}")
     public BonDeLivraisonDTO getById(@PathVariable Long id){
-        return bonDeLivraisonService.getById(id);
+        return blService.getById(id);
     }
 
     @PostMapping("/deliver")
     public void deliverBL(@RequestBody BLDeliverDTO blDeliverDTO){
-        bonDeLivraisonService.deliverBL(blDeliverDTO);
+        blService.deliverBL(blDeliverDTO);
     }
 
     @PostMapping("/validate/{id}")
     public void validate(@PathVariable Long id){
-        bonDeLivraisonService.validate(id);
+        blService.validate(id);
     }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id){
+        blService.delete(id);
+    }
+
 }

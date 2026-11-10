@@ -14,31 +14,36 @@ import java.util.List;
 @RequestMapping("/api/brs")
 public class BonDeReceptionController {
 
-    private final IBonDeReceptionService blService;
+    private final IBonDeReceptionService brService;
 
     @PostMapping("/{id}")
     public ResponseEntity<BonDeReceptionDTO> addBr(@RequestBody CreateBRDTO createBRDTO, @PathVariable Long id){
-        return ResponseEntity.ok(blService.addBR(createBRDTO,id));
+        return ResponseEntity.ok(brService.addBR(createBRDTO,id));
     }
 
     @GetMapping
     public List<BonDeReceptionDTO> getAll(){
-        return blService.getAll();
+        return brService.getAll();
     }
 
     @GetMapping("/{id}")
     public BonDeReceptionDTO getById(@PathVariable Long id){
-        return blService.getById(id);
+        return brService.getById(id);
     }
 
     @PostMapping("/receive")
     public void receive(@RequestBody BRRecieveDTO brRecieveDTO){
-        blService.receiveBR(brRecieveDTO);
+        brService.receiveBR(brRecieveDTO);
     }
 
     @PutMapping("/validate/{id}")
     public void validate(@PathVariable Long id){
-        blService.validate(id);
+        brService.validate(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id){
+        brService.delete(id);
     }
 
 }

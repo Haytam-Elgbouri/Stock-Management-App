@@ -119,11 +119,11 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
 
             Long deliveredQty = lineDTO.getDeliveredQuantity();
 
-            if (deliveredQty > line.getRemainingBefore()) {
-                throw new RuntimeException(
-                        "Delivered quantity exceeds remaining for BLLine: " + line.getId()
-                );
-            }
+//            if (deliveredQty > line.getRemainingBefore()) {
+//                throw new RuntimeException(
+//                        "Delivered quantity exceeds remaining for BLLine: " + line.getId()
+//                );
+//            }
 
             Stock stockLine = stockRepository
                     .findByArticleIdAndColorId(line.getArticle().getId(), line.getColor().getId())

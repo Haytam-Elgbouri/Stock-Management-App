@@ -13,4 +13,6 @@ public interface IBonDeReceptionService {
     void receiveBR(BRRecieveDTO brRecieveDTO);
 
     void validate(Long id);
+
+    void delete(Long id);
 }

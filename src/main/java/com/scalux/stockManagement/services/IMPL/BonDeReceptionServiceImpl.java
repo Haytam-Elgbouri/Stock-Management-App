@@ -95,14 +95,21 @@ public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
             throw new RuntimeException("BR Already validated");
         }
 
+        boolean empty = false;
+
         for (BRLineReceiveDTO lineDTO : brRecieveDTO.getLines()) {
             BRLine line = brLineRepository.findById(lineDTO.getId())
                     .orElseThrow(() -> new RuntimeException("BRLine not found: " + lineDTO.getId()));
 
             line.setReceived(lineDTO.getReceivedQuantity() + line.getReceived());
             line.setRemainingAfter(line.getRemainingBefore() - lineDTO.getReceivedQuantity());
-
+            if (lineDTO.getReceivedQuantity()!=null && lineDTO.getReceivedQuantity()>0) {
+                empty = true;
+            }
             brLineRepository.save(line);
+        }
+        if (!empty) {
+            throw new RuntimeException("BR is empty");
         }
     }
 
@@ -113,12 +120,13 @@ public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
         BonDeReception bonDeReception = brRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Bon de Reception not found"));
 
+        boolean empty = false;
 
         bonDeReception.setIsValidated(true);
         brRepository.save(bonDeReception);
 
         for (BRLine BRLine : bonDeReception.getLines()) {
-            if (BRLine.getReceived() != 0) {
+            if (BRLine.getReceived() != null && BRLine.getReceived() != 0) {
                 stockRepository.findByArticleIdAndColorId(BRLine.getArticle().getId(),BRLine.getColor().getId()
                         )
                         .ifPresentOrElse(existingStock -> {
@@ -145,8 +153,24 @@ public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
                     bcLine.setRemaining(bcLine.getRemaining() - BRLine.getReceived());
                     bcLineRepository.save(bcLine);
                 }
+
+                empty = true;
+
             }
         }
+        if (!empty) {
+            throw new RuntimeException("BR is empty");
+        }
+    }
+
+    @Override
+    public void delete(Long id) {
+        BonDeReception br = brRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("BR found"));
+        if (Boolean.TRUE.equals(br.getIsValidated())) {
+            throw new RuntimeException("validated BRs cannot be deleted");
+        }
+        brRepository.deleteById(id);
     }
 
 

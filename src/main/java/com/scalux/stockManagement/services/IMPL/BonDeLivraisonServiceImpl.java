@@ -102,7 +102,7 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
         if (Boolean.TRUE.equals(bl.getIsValidated())) {
             throw new RuntimeException("BL Already validated");
         }
-
+        boolean empty = false;
         for (BLLineDeliverDTO lineDTO : blDeliverDTO.getLines()) {
 
             BLLine line = blLineRepository.findById(lineDTO.getId())
@@ -127,8 +127,13 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
 
             line.setDelivered(line.getDelivered() + deliveredQty);
             line.setRemainingAfter(line.getRemainingBefore() - deliveredQty);
-
+            if (lineDTO.getDeliveredQuantity()!=null && lineDTO.getDeliveredQuantity()>0) {
+                empty = true;
+            }
             blLineRepository.save(line);
+        }
+        if (!empty) {
+            throw new RuntimeException("BL is empty");
         }
     }
 
@@ -160,21 +165,6 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
         }
     }
 
-
-    private void updateBCClientLine(BLLine blLine) {
-
-        BCClientLine bcClientLine = blLine.getBcClientLine();
-        if (bcClientLine == null) return;
-
-        Long delivered = blLine.getDelivered();
-
-        bcClientLine.setDelivered(bcClientLine.getDelivered() + delivered);
-        bcClientLine.setRemaining(bcClientLine.getRemaining() - delivered);
-
-        bcClientLineRepository.save(bcClientLine);
-    }
-
-
     @Override
     @Transactional
     public void validate(Long id) {
@@ -185,16 +175,35 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
         bl.setIsValidated(true);
         blRepository.save(bl);
 
+        boolean empty = false;
+
         for (BLLine blLine : bl.getLines()) {
-            if (blLine.getDelivered() == 0) continue;
+            if (blLine.getDelivered()==null || blLine.getDelivered() == 0) continue;
 
             updateStockForLine(blLine);
-            updateBCClientLine(blLine);
+
+            BCClientLine bcClientLine = blLine.getBcClientLine();
+            if (bcClientLine == null) return;
+
+            Long delivered = blLine.getDelivered();
+
+            bcClientLine.setDelivered(bcClientLine.getDelivered() + delivered);
+            bcClientLine.setRemaining(bcClientLine.getRemaining() - delivered);
+            empty =  true;
+            bcClientLineRepository.save(bcClientLine);
+        }
+        if (!empty) {
+            throw new RuntimeException("BL is empty");
         }
     }
 
     @Override
     public void delete(Long id) {
+        BonDeLivraison bl = blRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("BL not found"));
+        if (Boolean.TRUE.equals(bl.getIsValidated())) {
+            throw new RuntimeException("validated BLs cannot be deleted");
+        }
         blRepository.deleteById(id);
     }
 

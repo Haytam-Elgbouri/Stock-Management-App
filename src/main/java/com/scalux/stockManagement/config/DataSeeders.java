@@ -41,7 +41,7 @@ public class DataSeeders implements CommandLineRunner {
 //            admin.setCIN("JB567890");
 //            admin.setPhone("+212 6396-21650");
             admin.setRole(Role.ROLE_ADMIN);
-//            admin.setIsActive(true);
+            admin.setIsActive(true);
 
             userRepository.save(admin);
         }

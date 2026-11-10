@@ -32,6 +32,11 @@ public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
 
     @Override
     public BonDeReceptionDTO addBR(CreateBRDTO createBRDTO, Long id) {
+        boolean hasUnvalidatedBR = brRepository.existsByBcIdAndIsValidatedFalse(id);
+
+        if (hasUnvalidatedBR) {
+            throw new RuntimeException("Cannot create a new BR until the previous BR is validated.");
+        }
         BonDeReception br = new BonDeReception();
         BonDeCommande bc = bcRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Bon de commande not found"));
@@ -43,8 +48,13 @@ public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
         Long prixTotal = 0L;
         BonDeCommandeDTO bcDto = bcMapper.toDto(bc);
 
+        int count = 0;
+
         for (BCLineDTO bcLineDTO : bcDto.getLines()){
 
+            if (bcLineDTO.getReceived() >= bcLineDTO.getQuantity()){
+                count++;
+            }
 
             BRLine line = new BRLine();
             line.setArticle(articleMapper.toEntity(bcLineDTO.getArticle()));
@@ -60,6 +70,11 @@ public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
 
             lines.add(line);
 
+        }
+
+        if (count == bcDto.getLines().size()){
+            System.out.println("count : " + count + " lines : " + bcDto.getLines().size());
+            throw new RuntimeException("all lines are received");
         }
 
         br.setLines(lines);

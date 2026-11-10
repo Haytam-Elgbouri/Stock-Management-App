@@ -50,8 +50,13 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
         Long prixTotal = 0L;
         BonDeCommandeClientDTO bccDto = bccMapper.toDto(bcc);
 
+        int count = 0;
+
         for (BCClientLineDTO bcClientLineDTO : bccDto.getLines()){
 
+            if (bcClientLineDTO.getDelivered() >= bcClientLineDTO.getQuantity()){
+                count++;
+            }
 
             BLLine line = new BLLine();
             line.setArticle(articleMapper.toEntity(bcClientLineDTO.getArticle()));
@@ -67,6 +72,10 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
 
             lines.add(line);
 
+        }
+        if (count == bccDto.getLines().size()){
+            System.out.println("count : " + count + " lines : " + bccDto.getLines().size());
+            throw new RuntimeException("all lines are delivered");
         }
 
         bl.setLines(lines);

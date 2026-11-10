@@ -38,7 +38,7 @@ public class User implements UserDetails {
 
     private Role role;
 
-//    private Boolean isActive = false;
+    private Boolean isActive = false;
 
 
 

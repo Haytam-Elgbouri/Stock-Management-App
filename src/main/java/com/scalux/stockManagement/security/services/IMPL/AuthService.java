@@ -37,9 +37,9 @@
 
             User user = getUserByUsername(dto.username());
 
-//            if (!user.getIsActive()){
-//                throw new UserIsActiveException(dto.username());
-//            }
+            if (!user.getIsActive()){
+                throw new UserIsActiveException(dto.username());
+            }
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String token = jwtUtils.generateJwtToken(authentication);

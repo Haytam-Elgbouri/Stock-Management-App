@@ -18,6 +18,10 @@ public class Partner {
 
     private String name;
 
+    private String rib;
+
+    private String address;
+
     @Enumerated(EnumType.STRING)
     private PartnerType partnerType;
 }

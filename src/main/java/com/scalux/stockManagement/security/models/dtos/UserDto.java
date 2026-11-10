@@ -7,7 +7,7 @@ public record UserDto(
 
         Long id,
         String username,
-        Role role
-
+        Role role,
+        Boolean isActive
 ) {
 }

@@ -35,6 +35,8 @@ public class PartnerServiceImpl implements IPartnerService {
         Partner existingPartner = partnerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("partner not found"));
         existingPartner.setName(partner.getName());
+        existingPartner.setEmail(partner.getEmail());
+        existingPartner.setPhone(partner.getPhone());
         existingPartner.setPartnerType(partner.getPartnerType());
         existingPartner.setRib(partner.getRib());
         existingPartner.setAddress(partner.getAddress());

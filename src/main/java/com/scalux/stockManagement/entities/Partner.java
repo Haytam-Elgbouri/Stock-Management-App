@@ -18,6 +18,10 @@ public class Partner {
 
     private String name;
 
+    private String email;
+
+    private String phone;
+
     private String rib;
 
     private String address;

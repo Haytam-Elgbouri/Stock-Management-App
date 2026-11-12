@@ -120,7 +120,11 @@ public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
             }
 
             line.setReceived(lineDTO.getReceivedQuantity() + line.getReceived());
+            if (line.getRemainingAfter() == null){
             line.setRemainingAfter(line.getRemainingBefore() - lineDTO.getReceivedQuantity());
+            }else{
+                line.setRemainingAfter(line.getRemainingAfter() - lineDTO.getReceivedQuantity());
+            }
             if (lineDTO.getReceivedQuantity()!=null && lineDTO.getReceivedQuantity()>0) {
                 empty = true;
             }

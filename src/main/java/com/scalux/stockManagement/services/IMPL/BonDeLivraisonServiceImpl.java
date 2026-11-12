@@ -137,7 +137,11 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
 
 
             line.setDelivered(line.getDelivered() + deliveredQty);
+            if (line.getRemainingAfter() == null){
             line.setRemainingAfter(line.getRemainingBefore() - deliveredQty);
+            }else {
+                line.setRemainingAfter(line.getRemainingAfter() - deliveredQty);
+            }
             if (lineDTO.getDeliveredQuantity()!=null && lineDTO.getDeliveredQuantity()>0) {
                 empty = true;
             }

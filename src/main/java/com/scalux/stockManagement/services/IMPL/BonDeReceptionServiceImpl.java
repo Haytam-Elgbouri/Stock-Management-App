@@ -115,6 +115,9 @@ public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
         for (BRLineReceiveDTO lineDTO : brRecieveDTO.getLines()) {
             BRLine line = brLineRepository.findById(lineDTO.getId())
                     .orElseThrow(() -> new RuntimeException("BRLine not found: " + lineDTO.getId()));
+            if (line.getRemainingBefore()<=0){
+                throw new RuntimeException("BRLine already received");
+            }
 
             line.setReceived(lineDTO.getReceivedQuantity() + line.getReceived());
             line.setRemainingAfter(line.getRemainingBefore() - lineDTO.getReceivedQuantity());

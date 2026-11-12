@@ -39,6 +39,7 @@ public class PartnerServiceImpl implements IPartnerService {
         existingPartner.setPhone(partner.getPhone());
         existingPartner.setPartnerType(partner.getPartnerType());
         existingPartner.setRib(partner.getRib());
+        existingPartner.setIce(partner.getIce());
         existingPartner.setAddress(partner.getAddress());
         return partnerRepository.save(existingPartner);
     }

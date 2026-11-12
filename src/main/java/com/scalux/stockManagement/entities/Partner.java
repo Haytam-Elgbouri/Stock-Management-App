@@ -22,6 +22,8 @@ public class Partner {
 
     private String phone;
 
+    private String ice;
+
     private String rib;
 
     private String address;

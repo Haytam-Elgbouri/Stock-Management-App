@@ -22,7 +22,7 @@ public class Article {
     private String designation;
 
     @Enumerated(EnumType.STRING)
-    private Family family; // ACCESSORY, BARRE, PIECE
+    private Family family; // ACCESSORY, PROFILE, PIECE
 
     private String type; // e.g., "meter", "unit"
     private Long longueur;

@@ -43,7 +43,7 @@
 //                Article article = new Article();
 //                article.setReference("AR001");
 //                article.setDesignation("article...");
-//                article.setFamily(Family.BARRE); // assuming family 1 = BARRE
+//                article.setFamily(Family.PROFILE); // assuming family 1 = PROFILE
 //                article.setType("ml");
 //                article.setLongueur(6L);
 //

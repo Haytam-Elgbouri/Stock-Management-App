@@ -116,7 +116,9 @@ public class BonDeLivraisonServiceImpl implements IBonDeLivraisonService {
 
             BLLine line = blLineRepository.findById(lineDTO.getId())
                     .orElseThrow(() -> new RuntimeException("BLLine not found: " + lineDTO.getId()));
-
+            if (line.getRemainingBefore()<=0){
+                throw new RuntimeException("BLLine already delivered");
+            }
             Long deliveredQty = lineDTO.getDeliveredQuantity();
 
 //            if (deliveredQty > line.getRemainingBefore()) {

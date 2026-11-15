@@ -23,6 +23,11 @@ public class StockController {
         return ResponseEntity.ok(stockService.addToStock(dto));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<StockDTO>update(@PathVariable @Valid Long id, @RequestParam @Valid Long quantity){
+        return ResponseEntity.ok(stockService.updateStock(id, quantity));
+    }
+
     @GetMapping
     public ResponseEntity<List<StockDTO>> getAll() {
         return ResponseEntity.ok(stockService.getAll());

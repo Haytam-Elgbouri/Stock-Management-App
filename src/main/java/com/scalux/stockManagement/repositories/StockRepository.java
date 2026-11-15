@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface StockRepository extends JpaRepository<Stock, Long> {
     Optional<Stock> findByArticleIdAndColorId(Long articleId, Long colorId);
+    boolean existsByArticleIdAndColorId(Long articleId, Long colorId);
 }

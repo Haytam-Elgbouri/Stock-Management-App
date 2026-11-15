@@ -9,4 +9,5 @@ public interface IStockService {
     StockDTO addToStock(StockDTO dto);
     List<StockDTO> getAll();
     StockTotalDTO getTotalStock();
+    StockDTO updateStock(Long id, Long quantity);
 }

@@ -26,6 +26,11 @@ public class StockServiceImpl implements IStockService {
 
     @Override
     public StockDTO addToStock(StockDTO dto) {
+
+        if (dto.getQuantity() <= 0){
+            throw new RuntimeException("Can't add stock with negative or zero quantity");
+        }
+
         Stock stock = stockMapper.toEntity(dto);
         Optional<ArticleColorPrice> articleColorPrice = articleColorPriceRepository.findByArticleIdAndColorId(stock.getArticle().getId(),stock.getColor().getId());
         ArticleColorPrice prixArticle = articleColorPrice
@@ -91,6 +96,11 @@ public class StockServiceImpl implements IStockService {
 
     @Override
     public StockDTO updateStock(Long id, Long quantity) {
+
+        if (quantity <= 0){
+            throw new RuntimeException("Can't update stock with negative or zero quantity");
+        }
+
         Stock stock = stockRepository.findById(id).
                 orElseThrow(() -> new RuntimeException("Stock not found"));
         stock.setQuantity(quantity);

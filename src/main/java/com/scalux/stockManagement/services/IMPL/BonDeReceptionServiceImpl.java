@@ -170,9 +170,17 @@ public class BonDeReceptionServiceImpl implements IBonDeReceptionService {
                             stockRepository.save(stockMapper.toEntity(stockDTO));
                         });
                 BCLine bcLine = BRLine.getBcLine();
+                Long extraPrice = 0L;
                 if (bcLine != null) {
                     bcLine.setReceived(bcLine.getReceived() + BRLine.getReceived());
                     bcLine.setRemaining(bcLine.getRemaining() - BRLine.getReceived());
+                    if (bcLine.getReceived() > bcLine.getQuantity()){
+                        bcLine.setPrixTotalLigne(bcLine.getReceived() * bcLine.getPrixArticleHT());
+
+                        extraPrice = bcLine.getRemaining() * -1L * bcLine.getPrixArticleHT();
+                    }
+                    BonDeCommande bc = bcRepository.findByLinesId(bcLine.getId());
+                    bc.setPrixTotalHT(bc.getPrixTotalHT() + extraPrice);
                     bcLineRepository.save(bcLine);
                 }
 

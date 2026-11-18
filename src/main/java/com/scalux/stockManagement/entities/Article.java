@@ -28,6 +28,6 @@ public class Article {
     private Long longueur;
 
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ArticleColorPrice> colorPrices;
 }

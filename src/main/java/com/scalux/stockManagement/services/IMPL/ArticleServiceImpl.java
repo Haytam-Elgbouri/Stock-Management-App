@@ -98,7 +98,19 @@ public class ArticleServiceImpl implements IArticleService {
         existing.setDesignation(dto.getDesignation());
         existing.setFamily(dto.getFamily());
         existing.setType(dto.getType());
+        if (dto.getFamily() == Family.PROFILE) {
+            existing.setLongueur(dto.getLongueur());
+        }
+//        existing.setColorPrices(articleMapper.toEntity(dto.getColorPrices()));
+        existing.getColorPrices().clear();
 
+        List<ArticleColorPrice> prices =
+                articleMapper.toEntity(dto.getColorPrices());
+
+        for (ArticleColorPrice price : prices) {
+            price.setArticle(existing);
+            existing.getColorPrices().add(price);
+        }
         return articleMapper.toDto(articleRepository.save(existing));
     }
 

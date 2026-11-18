@@ -7,6 +7,8 @@ import com.scalux.stockManagement.entities.ArticleColorPrice;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 
 @Mapper(componentModel = "spring")
 public interface ArticleMapper {
@@ -20,6 +22,12 @@ public interface ArticleMapper {
     @Mapping(target = "prixUnitaireHT", source = "prixUnitaireHT")
     @Mapping(target = "prixTotalHT", source = "prixTotalHT")
     ColorPriceDTO toDto(ArticleColorPrice colorPrice);
+
+    @Mapping(target = "color.id", source = "colorId")
+    @Mapping(target = "color.name", source = "colorName")
+    @Mapping(target = "prixUnitaireHT", source = "prixUnitaireHT")
+    @Mapping(target = "prixTotalHT", source = "prixTotalHT")
+    List<ArticleColorPrice> toEntity(List<ColorPriceDTO> colorPrices);
 }
 
 
